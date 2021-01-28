@@ -8,7 +8,7 @@
 
 Base packages
 ```
-pacman -S i3-gaps i3status i3lock python-i3ipc dmenu noto-fonts ttf-fantasque-sans-mono xterm htop nethogs arandr volumeicon dunst feh picom udiskie unclutter xorg-xinput xfce4-power-manager tlp cpupower polkit polkit-gnome polkit-qt5 networkmanager breeze breeze-gtk qt5ct lxappearance capitaine-cursors arc-icon-theme archlinux-wallpaper thunar mousepad firefox neofetch
+pacman -S i3-gaps i3status i3lock python-i3ipc dmenu noto-fonts ttf-fantasque-sans-mono xterm htop nethogs arandr volumeicon dunst feh picom udiskie unclutter xorg-xinput xfce4-power-manager tlp cpupower polkit polkit-gnome polkit-qt5 networkmanager breeze breeze-gtk qt5ct lxappearance capitaine-cursors arc-icon-theme archlinux-wallpaper thunar mousepad firefox neofetch scrot
 ```
 ```
 yay -S clipit google-chrome spotify skypeforlinux-stable-bin
