@@ -7,15 +7,14 @@
 
 Arch Linux:
 
-```sh
-pacman -S i3-gaps i3status i3lock dmenu noto-fonts ttf-fantasque-sans-mono xterm htop volumeicon dunst feh picom udiskie unclutter xorg-xinput xfce4-power-manager polkit polkit-gnome polkit-qt5 networkmanager breeze breeze-gtk breeze-icons qt5ct lxappearance capitaine-cursors arc-icon-theme archlinux-wallpaper
 ```
-```sh
-yay -S clipit
+pacman -S i3-gaps i3status i3lock dmenu noto-fonts ttf-fantasque-sans-mono xterm htop nethogs volumeicon dunst feh picom udiskie unclutter xorg-xinput xfce4-power-manager tlp powertop cpupower polkit polkit-gnome polkit-qt5 networkmanager breeze breeze-gtk breeze-icons qt5ct lxappearance capitaine-cursors arc-icon-theme archlinux-wallpaper thunar mousepad firefox neofetch
+```
+```
+yay -S clipit google-chrome spotify skypeforlinux-stable-bin
 ```
 
 ## Configuration
-
 
 
 ## Release History
