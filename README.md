@@ -28,12 +28,15 @@ Copy the files from this repo and put them in ~/
 The colors and other settings should be already on .Xresources
 
 ### Appearance
-Open `lxappearance` and change:
+GTK : Open `lxappearance` and change:
 * Font to `Noto Sans`
 * Widget to `Breeze`
 * Icon theme to `Arc`
 * Mouse Cursor to `Capitaine Cursors`
 
-## Release History
-* 0.0.1
-    * Work in progress
+QT : Open `qt5ct` and change:
+* Style to `Breeze`
+* Fonts to `Noto Sans` and `Fantasque Sans Mono`
+* Icon theme to `Arc`
+Then add `echo "QT_QPA_PLATFORMTHEME=qt5ct" >> /etc/environment`
+
