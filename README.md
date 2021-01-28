@@ -1,10 +1,8 @@
 # i3-config
 > My personal i3 config
 
-![](screenshot.png)
 ![](screenshot2.png)
-
-This config assumes an Arch install with X installed.
+![](screenshot.png)
 
 ## Installation
 
