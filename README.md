@@ -9,7 +9,7 @@ This config assumes an Arch install with X installed.
 
 Base packages
 ```
-pacman -S i3-gaps i3status i3lock python-i3ipc dmenu noto-fonts ttf-fantasque-sans-mono xterm htop nethogs arandr volumeicon dunst feh picom udiskie unclutter xorg-xinput xfce4-power-manager tlp powertop cpupower polkit polkit-gnome polkit-qt5 networkmanager breeze breeze-gtk breeze-icons qt5ct lxappearance capitaine-cursors arc-icon-theme archlinux-wallpaper thunar mousepad firefox neofetch git
+pacman -S i3-gaps i3status i3lock python-i3ipc dmenu noto-fonts ttf-fantasque-sans-mono xterm htop nethogs arandr volumeicon dunst feh picom udiskie unclutter xorg-xinput xfce4-power-manager tlp cpupower polkit polkit-gnome polkit-qt5 networkmanager breeze breeze-gtk qt5ct lxappearance capitaine-cursors arc-icon-theme archlinux-wallpaper thunar mousepad firefox neofetch
 ```
 ```
 yay -S clipit google-chrome spotify skypeforlinux-stable-bin
@@ -18,13 +18,23 @@ Lightdm install, if needed
 ```
 pacman -S lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
 ```
+Extras
+```
+pacman -S git gvfs powertop
+```
 
 ## Configuration
-Copy the files from this repo and put them in ~/. Change the permissions to execute on scripts folder
+Copy the files from this repo and put them in ~/.
+
+Change the permissions to execute on scripts folder
 ```
 cd ~/.config/i3/scripts
 chmod +x *
 ``` 
+Enabling lightdm
+``` 
+systemctl enable lightdm
+```
 ### Terminal config
 ```echo "TERMINAL=xterm" >> /etc/environment```
 
