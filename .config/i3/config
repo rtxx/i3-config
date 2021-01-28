@@ -6,16 +6,20 @@
 	## Defaults
 	#default terminal: add/change /etc/environment TERMINAL=xterm
 	set $file_manager thunar                                          # default file manager
-	set $browser google-chrome-stable 			                          # default web browser
-	set $media_player spotify 					                              # default media player
-	set $chat skypeforlinux 					                                # default chat app
-	set $wallpaper ~/.config/i3/breezeblack.jpg	              # wallpaper path
-	set $lockpaper /usr/share/backgrounds/archlinux/conference.png	  # lock wallpaper path
-  # scripts
-	set $i3exit ~/.config/i3/scripts/i3exit                           # i3exit is a script from i3 manjaro, adds shutdown menu : https://github.com/Airblader/dotfiles-manjaro/blob/master/.i3/i3exit
-	set $i3cpu-governor ~/.config/i3/scripts/i3cpu-governor           # i3cpu-governor is a script to change cpu governor : https://github.com/rtxx/i3-config
-  set $i3-alt-layout ~/.config/i3/scripts/i3_alternating_layout.py  # Scripts to open new windows in i3wm using alternating layouts (splith/splitv) for each new window. : https://github.com/olemartinorg/i3-alternating-layout
-  set $feh-blur ~/.config/i3/scripts/feh-blur                       # adds blur on wallpaper when a window is visible: https://github.com/rstacruz/feh-blur-wallpaper
+	set $browser google-chrome-stable 			         # default web browser
+	set $media_player spotify 					 # default media player
+	set $chat skypeforlinux 					 # default chat app
+	set $wallpaper ~/.config/i3/breezeblack.jpg	              	  # wallpaper path
+	set $lockpaper /usr/share/backgrounds/archlinux/conference.png	 # lock wallpaper path
+  	# Scripts
+        # i3exit is a script from i3 manjaro, adds shutdown menu : https://github.com/Airblader/dotfiles-manjaro/blob/master/.i3/i3exit
+	set $i3exit ~/.config/i3/scripts/i3exit
+	# i3cpu-governor is a script to change cpu governor : https://github.com/rtxx/i3-config
+	set $i3cpu-governor ~/.config/i3/scripts/i3cpu-governor
+	# Scripts to open new windows in i3wm using alternating layouts (splith/splitv) for each new window. : https://github.com/olemartinorg/i3-alternating-layout
+	set $i3-alt-layout ~/.config/i3/scripts/i3_alternating_layout.py
+        # adds blur on wallpaper when a window is visible: https://github.com/rstacruz/feh-blur-wallpaper
+	set $feh-blur ~/.config/i3/scripts/feh-blur
 
 	# Set mod key (Mod1=<Alt>, Mod4=<Super>)
 	set $mod Mod4
@@ -45,7 +49,7 @@
 
 	# kill focused window
 	bindsym $mod+Shift+q kill
-  bindsym $mod+Escape kill
+  	bindsym $mod+Escape kill
 
 	# reload the configuration file
 	bindsym $mod+Shift+c reload
@@ -92,20 +96,23 @@
 
 	# Monitor settings
 	bindsym $mod+p exec --no-startup-id arandr
+	
+	# Printscreen
+	bindsym Print exec scrot
 
 #### Applications Section ####
 	# Start a terminal
 	bindsym $mod+Return exec i3-sensible-terminal
-  # Start a terminal on center and floating with minimal size
-  bindsym $mod+Shift+Return exec --no-startup-id i3-sensible-terminal -class termfloat-oneliner 
+  	# Start a terminal on center and floating with minimal size
+ 	bindsym $mod+Shift+Return exec --no-startup-id i3-sensible-terminal -class termfloat-oneliner 
 
 	# Program launcher
 	#nord colors
 	#bindsym $mod+Shift+d exec --no-startup-id "dmenu_run -nf '#D8DEE9' -nb '#2E3440' -sb '#D8DEE9' -sf '#2E3440' -fn 'Fantasque Sans Mono-12' -p '>'"
 	#breeze colors
 	bindsym $mod+d exec --no-startup-id "dmenu_run -nf '#EFF0F1' -nb '#475057' -sb '#EFF0F1' -sf '#475057' -fn 'Fantasque Sans Mono-12' -p '>'"
-  bindsym XF86Search exec --no-startup-id "dmenu_run -nf '#EFF0F1' -nb '#475057' -sb '#EFF0F1' -sf '#475057' -fn 'Fantasque Sans Mono-12' -p '>'"
-  # rofi, if installed uncomment
+ 	bindsym XF86Search exec --no-startup-id "dmenu_run -nf '#EFF0F1' -nb '#475057' -sb '#EFF0F1' -sf '#475057' -fn 'Fantasque Sans Mono-12' -p '>'"
+  	# rofi, if installed uncomment
  	#bindsym $mod+d exec --no-startup-id rofi -show 
 	#bindsym XF86Search exec --no-startup-id rofi -show
 
