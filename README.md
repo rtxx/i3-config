@@ -42,9 +42,9 @@ The colors and other settings should be already on .Xresources
 ### Nano
 Install ```pacman -S nano-syntax-highlighting```.
 
-Add ```inlcude /usr/share/nano-syntax-highlighting/*.nanorc``` to use syntax highlighting
+Add ```inlcude /usr/share/nano-syntax-highlighting/*.nanorc``` to ```/etc/nanorc``` to use syntax highlighting
 
-Add ```set mouse``` to add mouse support
+Add ```set mouse``` to ```/etc/nanorc``` to add mouse support
 
 ### Appearance
 GTK : Open `lxappearance` and change:
