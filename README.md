@@ -70,6 +70,6 @@ Open `lightdm-gtk-greeter-settings-pkexec` and change:
 * Theme to 'Breeze-Dark`
 * Icons to `Arc`
 * Font to `Fantasque Sans Mono Regular`
-* Change background color to `#31363b`
+* Change background color to `#2a2e32`
 * Disable user image
 
