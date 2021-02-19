@@ -48,6 +48,12 @@ Add ```inlcude /usr/share/nano-syntax-highlighting/*.nanorc``` to ```/etc/nanorc
 Add ```set mouse``` to ```/etc/nanorc``` to add mouse support
 
 ### Appearance
+#### Auto
+Copy .config files. GTK should already be set. QT5 only needs ```echo "QT_QPA_PLATFORMTHEME=qt5ct" >> /etc/environment```
+
+Copy ```lightdm-gtk-greeter.conf``` to ```/etc/lightdm/```
+
+#### Manual
 GTK : Open `lxappearance` and change:
 * Font to `Noto Sans`
 * Widget to `Breeze`
