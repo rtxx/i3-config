@@ -9,18 +9,17 @@
 
 Base packages
 ```
-pacman -S i3-gaps i3status i3lock python-i3ipc dmenu noto-fonts ttf-fantasque-sans-mono xterm htop nethogs arandr volumeicon dunst feh picom udiskie unclutter xorg-xinput xfce4-power-manager tlp cpupower polkit polkit-gnome polkit-qt5 networkmanager breeze breeze-gtk qt5ct lxappearance capitaine-cursors arc-icon-theme archlinux-wallpaper thunar mousepad firefox neofetch scrot
+pacman -S i3-gaps i3status i3lock python-i3ipc dmenu noto-fonts ttf-fantasque-sans-mono xterm htop nethogs arandr volumeicon dunst feh picom udiskie unclutter xorg-xinput xfce4-power-manager tlp cpupower polkit polkit-gnome polkit-qt5 networkmanager breeze breeze-gtk qt5ct lxappearance capitaine-cursors arc-icon-theme archlinux-wallpaper thunar mousepad firefox neofetch scrot xdg-user-dirs lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings git gvfs gvfs-smb powertop pulseaudio pulseaudio-alsa alsa-utils pavucontrol ufw gufw gnome-keyring seahorse nano-syntax-highlighting
 ```
+Install ```yay```
 ```
-yay -S clipit google-chrome spotify skypeforlinux-stable-bin
+pacman -S --needed base-devel
+cd /tmp/ && git clone https://aur.archlinux.org/yay.git
+cd yay && makepkg -si
 ```
-Lightdm install, if needed
+AUR packages
 ```
-pacman -S lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
-```
-Extras
-```
-pacman -S git gvfs powertop
+yay -S clipit spotify skypeforlinux-stable-bin thunar-shares-plugin 
 ```
 
 ## Configuration
@@ -41,8 +40,6 @@ systemctl enable lightdm
 The colors and other settings should be already on .Xresources
 
 ### Nano
-Install ```pacman -S nano-syntax-highlighting```.
-
 Add ```inlcude /usr/share/nano-syntax-highlighting/*.nanorc``` to ```/etc/nanorc``` to use syntax highlighting
 
 Add ```set mouse``` to ```/etc/nanorc``` to add mouse support
