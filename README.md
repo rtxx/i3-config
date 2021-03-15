@@ -2,6 +2,7 @@
 > My personal i3 config
 
 ![](screenshot2.png)
+![](screenshot3.png)
 ![](screenshot.png)
 ![](vm-lighdm.png)
 
