@@ -19,7 +19,7 @@ cd yay && makepkg -si
 ```
 AUR packages
 ```
-yay -S clipit spotify skypeforlinux-stable-bin thunar-shares-plugin 
+yay -S clipit spotify skypeforlinux-stable-bin thunar-shares-plugin teamviewer
 ```
 
 ## Configuration
@@ -30,9 +30,12 @@ Change the permissions to execute on scripts folder
 cd ~/.config/i3/scripts
 chmod +x *
 ``` 
-Enabling lightdm
+Enabling services
 ``` 
 systemctl enable lightdm
+systemctl enable tlp
+systemctl enable ufw
+systemctl enable teamviewerd
 ```
 ### Terminal config
 ```echo "TERMINAL=xterm" >> /etc/environment```
