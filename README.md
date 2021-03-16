@@ -44,7 +44,7 @@ systemctl enable teamviewerd
 The colors and other settings should be already on .Xresources
 
 ### Nano
-Config ```/etc/nanorc``` with for syntax highlighting, mouse support, auto identation, tab defaults to 4 spaces
+Config ```/etc/nanorc``` for syntax highlighting, mouse support, auto identation, tab defaults to 4 spaces
 ```
 inlcude /usr/share/nano-syntax-highlighting/*.nanorc
 set mouse
