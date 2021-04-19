@@ -5,11 +5,11 @@
 #### General Settings ####
 	## Defaults
 	#default terminal: add/change /etc/environment TERMINAL=xterm
-	set $file_manager thunar                                          # default file manager
-	set $browser google-chrome-stable 			         # default web browser
+	set $file_manager thunar                                         # default file manager
+	set $browser firefox		 			         # default web browser
 	set $media_player spotify 					 # default media player
 	set $chat skypeforlinux 					 # default chat app
-	set $wallpaper ~/.config/i3/breezeblack.jpg	              	  # wallpaper path
+	set $wallpaper ~/.config/i3/breezeblack.jpg	              	 # wallpaper path
 	set $lockpaper /usr/share/backgrounds/archlinux/conference.png	 # lock wallpaper path
   	# Scripts
         # i3exit is a script from i3 manjaro, adds shutdown menu : https://github.com/Airblader/dotfiles-manjaro/blob/master/.i3/i3exit
