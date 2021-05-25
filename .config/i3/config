@@ -15,6 +15,9 @@ set $media_player spotify
 # default chat app
 set $chat skypeforlinux
 
+#i3 bar
+set $i3bar i3status
+
 # wallpaper path
 set $wallpaper ~/.config/i3/breezeblack.jpg
 # lock wallpaper path
@@ -412,7 +415,7 @@ bindsym $mod+F11 bar mode invisible
 bindsym $mod+F12 bar mode dock
 bar {
   bindsym button3 exec --no-startup-id jgmenu_run
-  status_command i3status
+  status_command $i3bar
   position top
   colors {
     background #475057
