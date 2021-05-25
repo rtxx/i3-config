@@ -36,12 +36,6 @@
 *.color7:       #7f8c8d
 *.color15:      #eff0f1
 
-! XTerm*selectToClipboard: true
-! XTerm*renderFont: true
-! XTerm*faceName: Fantasque Sans Mono
-! XTerm*faceSize: 10
-! XTerm*internalBorder: 24
-
 *fastScroll: true
 *selectToClipboard: true
 
@@ -49,3 +43,7 @@
 *faceName: Fantasque Sans Mono
 *faceSize: 10
 *internalBorder: 24
+
+URxvt*font: xft:FantasqueSansMono-Regular:size=10
+URxvt*letterSpace: -1
+URxvt*scrollBar: False
