@@ -28,8 +28,8 @@ Copy the files from this repo and put them in ~/.
 
 Change the permissions to execute on scripts folder
 ```
-cd ~/.config/i3/scripts
-chmod +x *
+chmod +x ~/.config/i3/scripts/*
+chmod +x ~/.config/i3blocks/custom_scripts/*
 ``` 
 Enabling services
 ``` 
