@@ -13,46 +13,46 @@ separator_block_width=16
 #[window-title]
 #command=xtitle
 #interval=1
-#label=
+#label= 
 
 #[mediaplayer]
-#label=
+#label= 
 #command=playerctl --player=spotify,vlc,firefox metadata --format " {{ artist }} - {{ title }}"
 #interval=5
 #signal=10
 
 [load_average]
 command=~/.config/i3blocks/custom_scripts/load_avg
-label=↝
+label=↝ 
 interval=10
 
 [memory]
 command=~/.config/i3blocks/custom_scripts/memory
-label=🐏
+label=🐏 
 interval=10
 
 [disk]
 command=~/.config/i3blocks/custom_scripts/disk
-LABEL=💾 /
+LABEL=💾 / 
 DIR=/
 ALERT_LOW=10
 interval=60
 
 [disk]
 command=~/.config/i3blocks/custom_scripts/disk
-LABEL=~
+LABEL=~ 
 DIR=/home
 ALERT_LOW=10
 interval=60
 
 [battery]
 command=~/.config/i3blocks/custom_scripts/battery
-LABEL=🔋
+LABEL=🔋 
 interval=15
 
 [time]
-label=🕒
-command=date '+%Y-%m-%d %H:%M'
+label=🕒 
+command=date '+%Y-%m-%d %H:%M' 
 interval=5
 
 [updates]
