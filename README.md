@@ -20,7 +20,7 @@ cd yay && makepkg -si
 ```
 AUR packages
 ```
-yay -S clipit spotify skypeforlinux-stable-bin thunar-shares-plugin teamviewer
+yay -S clipit spotify skypeforlinux-stable-bin thunar-shares-plugin teamviewer ytfzf
 ```
 
 ## Configuration
