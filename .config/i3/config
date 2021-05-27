@@ -16,7 +16,7 @@ set $media_player spotify
 set $chat skypeforlinux
 
 #i3 bar
-set $i3bar i3status
+set $i3bar i3blocks
 
 # wallpaper path
 set $wallpaper ~/.config/i3/breezeblack.jpg
@@ -28,6 +28,8 @@ set $lockpaper /usr/share/backgrounds/archlinux/conference.png
 set $i3exit ~/.config/i3/scripts/i3exit
 # i3cpu-governor is a script to change cpu governor : https://github.com/rtxx/i3-config
 set $i3cpu-governor ~/.config/i3/scripts/i3cpu-governor
+# i3services is a script to start/stop some services: https://github.com/rtxx/i3-config
+set $i3services ~/.config/i3/scripts/i3services
 # Scripts to open new windows in i3wm using alternating layouts (splith/splitv) for each new window. : https://github.com/olemartinorg/i3-alternating-layout
 set $i3-alt-layout ~/.config/i3/scripts/i3_alternating_layout.py
 # adds blur on wallpaper when a window is visible: https://github.com/rstacruz/feh-blur-wallpaper
@@ -250,6 +252,24 @@ mode "$mode_cpu" {
   bindsym 6 exec --no-startup-id pkexec $i3cpu-governor schedutil && :, mode "default"
 
   # exit cpu mode: "Enter" or "Escape"
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+### services menu
+# checks, starts and stops some common services
+bindsym $mod+Ctrl+s mode "$mode_services"
+set $mode_services (1)check (2)start-printing  (3)start-bluetooth (4)start-energy (5)stop-printing  (6)stop-bluetooth (7)stop-energy 
+mode "$mode_services" {
+  bindsym 1 exec --no-startup-id $i3services check && :, mode "default"
+  bindsym 2 exec --no-startup-id $i3services start-printing && :, mode "default"
+  bindsym 3 exec --no-startup-id $i3services start-bluetooth && :, mode "default"
+  bindsym 4 exec --no-startup-id $i3services start-energy && :, mode "default"
+  bindsym 5 exec --no-startup-id $i3services stop-printing && :, mode "default"
+  bindsym 6 exec --no-startup-id $i3services stop-bluetooth && :, mode "default"
+  bindsym 7 exec --no-startup-id $i3services stop-energy && :, mode "default"
+
+  # exit services mode: "Enter" or "Escape"
   bindsym Return mode "default"
   bindsym Escape mode "default"
 }
