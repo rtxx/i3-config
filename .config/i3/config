@@ -156,7 +156,8 @@ exec --no-startup-id xinput --set-prop "Synaptics TM3053-004" "libinput Tapping 
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 
-#exec --no-startup-id jgmenu --at-pointer --hide-on-startup
+# enable simple right click menu on i3bar
+exec --no-startup-id jgmenu --at-pointer --hide-on-startup
 
 exec --no-startup-id $i3-alt-layout
 #exec --no-startup-id $feh-blur --blur 4 --darken 0 -d
@@ -434,6 +435,7 @@ client.background       #EFF0F1
 bindsym $mod+F11 bar mode invisible
 bindsym $mod+F12 bar mode dock
 bar {
+  # simple right click menu on i3bar
   bindsym button3 exec --no-startup-id jgmenu_run
   status_command $i3bar
   position top
