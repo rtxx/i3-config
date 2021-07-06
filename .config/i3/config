@@ -19,9 +19,10 @@ set $chat skypeforlinux
 set $i3bar i3blocks
 
 # wallpaper path
-set $wallpaper ~/.config/i3/breezeblack.jpg
+set $wallpaper ~/.config/i3/wallpapers/thinkpad.png
+
 # lock wallpaper path
-set $lockpaper /usr/share/backgrounds/archlinux/conference.png
+set $lockpaper /usr/share/backgrounds/archlinux/geolanes.png
 
 # Scripts
 # i3exit is a script from i3 manjaro, adds shutdown menu : https://github.com/Airblader/dotfiles-manjaro/blob/master/.i3/i3exit
@@ -128,6 +129,9 @@ bindsym XF86Search exec --no-startup-id "dmenu_run -nf '#EFF0F1' -nb '#475057' -
 #bindsym $mod+d exec --no-startup-id rofi -show
 #bindsym XF86Search exec --no-startup-id rofi -show
 
+#gmrun
+bindsym $mod+Shift+d exec --no-startup-id gmrun
+
 # Most used
 bindsym $mod+F1 exec $file_manager
 bindsym $mod+F2 exec $browser
@@ -155,11 +159,12 @@ exec --no-startup-id unclutter
 exec --no-startup-id xinput --set-prop "Synaptics TM3053-004" "libinput Tapping Enabled" 1
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# cute dog, dont kill it :(
+# exec --no-startup-id oneko -dog
 
-# enable simple right click menu on i3bar
 exec --no-startup-id jgmenu --at-pointer --hide-on-startup
 
-exec --no-startup-id $i3-alt-layout
+#exec --no-startup-id $i3-alt-layout
 #exec --no-startup-id $feh-blur --blur 4 --darken 0 -d
 
 # Open applications on specific workspaces
@@ -435,7 +440,6 @@ client.background       #EFF0F1
 bindsym $mod+F11 bar mode invisible
 bindsym $mod+F12 bar mode dock
 bar {
-  # simple right click menu on i3bar
   bindsym button3 exec --no-startup-id jgmenu_run
   status_command $i3bar
   position top
@@ -457,7 +461,7 @@ bar {
 #############################
 
 # Set inner/outer gaps
-gaps inner 0
+gaps inner 2
 gaps outer 8
 
 # Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
