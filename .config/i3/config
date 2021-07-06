@@ -19,7 +19,7 @@ set $chat skypeforlinux
 set $i3bar i3blocks
 
 # wallpaper path
-set $wallpaper ~/.config/i3/wallpapers/thinkpad.png
+set $wallpaper ~/.config/i3/wallpapers/breezeblack.jpg
 
 # lock wallpaper path
 set $lockpaper /usr/share/backgrounds/archlinux/geolanes.png
