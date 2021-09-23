@@ -22,7 +22,7 @@ yay -S clipit spotify skypeforlinux-stable-bin thunar-shares-plugin teamviewer y
 ```
 
 ## Configuration
-Copy the files from this repo and put them in ~/.
+Copy the files from this repo and put them in ~.
 
 Change the permissions to execute on scripts folder
 ```
@@ -68,4 +68,8 @@ Open `lightdm-gtk-greeter-settings-pkexec` and change:
 * Font to `Fantasque Sans Mono Regular`
 * Change background color to `#2a2e32`
 * Disable user image
+
+#### Note
+The config files from ```Xresources```,```i3```,```i3status``` can be easily changed with base16 themes.
+Check for the respectly ```config.d``` (for ```Xresources``` go to ```Xresources.d``` on ~ folder) and go to ```config-theme```.
 
