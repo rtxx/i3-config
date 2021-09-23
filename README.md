@@ -2,6 +2,7 @@
 > My personal i3 config
 
 ![](screenshot1.png)
+![](screenshot2.png)
 ![](vm-lighdm.png)
 
 ## Installation
