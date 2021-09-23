@@ -3,6 +3,7 @@
 
 ![](screenshot1.png)
 ![](screenshot2.png)
+![](screenshot3.png)
 ![](vm-lighdm.png)
 
 ## Installation
