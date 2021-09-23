@@ -1,9 +1,7 @@
 # i3-config
 > My personal i3 config
 
-![](screenshot2.png)
-![](screenshot3.png)
-![](screenshot.png)
+![](screenshot1.png)
 ![](vm-lighdm.png)
 
 ## Installation
@@ -28,8 +26,7 @@ Copy the files from this repo and put them in ~/.
 
 Change the permissions to execute on scripts folder
 ```
-chmod +x ~/.config/i3/scripts/*
-chmod +x ~/.config/i3blocks/custom_scripts/*
+chmod +x ~/.config/i3/config.d/scripts/*
 ``` 
 Enabling services
 ``` 
@@ -44,14 +41,7 @@ systemctl enable teamviewerd
 The colors and other settings should be already on .Xresources
 
 ### Nano
-Config ```/etc/nanorc``` for syntax highlighting, mouse support, auto identation, tab defaults to 4 spaces
-```
-inlcude /usr/share/nano-syntax-highlighting/*.nanorc
-set mouse
-set autoindent
-set tabsize 4
-set tabstospaces
-```
+Copy ```nanorc``` to ```/etc/nanorc```
 
 ### Appearance
 #### Auto
@@ -62,19 +52,19 @@ Copy ```lightdm-gtk-greeter.conf``` to ```/etc/lightdm/```
 #### Manual
 GTK : Open `lxappearance` and change:
 * Font to `Noto Sans`
-* Widget to `Breeze`
-* Icon theme to `Arc`
+* Widget to `Breeze Dark`
+* Icon theme to `Breeze Dark`
 * Mouse Cursor to `Capitaine Cursors`
 
 QT : Open `qt5ct` and change:
 * Style to `Breeze`
 * Fonts to `Noto Sans` and `Fantasque Sans Mono`
-* Icon theme to `Arc`
+* Icon theme to `Breeze Dark`
 Then add `echo "QT_QPA_PLATFORMTHEME=qt5ct" >> /etc/environment`
 
 Open `lightdm-gtk-greeter-settings-pkexec` and change:
 * Theme to 'Breeze-Dark`
-* Icons to `Arc`
+* Icons to `Breeze Dark`
 * Font to `Fantasque Sans Mono Regular`
 * Change background color to `#2a2e32`
 * Disable user image
