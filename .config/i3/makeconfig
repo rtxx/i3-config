@@ -1,0 +1,6 @@
+#!/bin/bash
+CONFIGDIR=~/.config/i3
+if [[ -f "$CONFIGDIR/config" ]]; then
+  rm $CONFIGDIR/config
+fi
+cat $CONFIGDIR/config.d/config-main $CONFIGDIR/config.d/config-theme > $CONFIGDIR/config

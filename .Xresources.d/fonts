@@ -1,0 +1,11 @@
+*fastScroll: true
+*selectToClipboard: true
+
+*renderFont: true
+*faceName: Fantasque Sans Mono
+*faceSize: 14
+*internalBorder: 24
+
+URxvt*font: xft:FantasqueSansMono-Regular:size=14
+URxvt*letterSpace: -1
+URxvt*scrollBar: False

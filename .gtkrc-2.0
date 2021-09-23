@@ -1,9 +1,9 @@
 # DO NOT EDIT! This file will be overwritten by LXAppearance.
 # Any customization should be done in ~/.gtkrc-2.0.mine instead.
 
-include "/home/vuser/.gtkrc-2.0.mine"
-gtk-theme-name="Breeze"
-gtk-icon-theme-name="Arc"
+include "/home/ruitx/.gtkrc-2.0.mine"
+gtk-theme-name="Breeze-Dark"
+gtk-icon-theme-name="breeze-dark"
 gtk-font-name="Noto Sans 10"
 gtk-cursor-theme-name="capitaine-cursors"
 gtk-cursor-theme-size=0
