@@ -1,8 +1,4 @@
 
-memory {
-  format = "🐏 %used/%total"
-}
-
 load {
   format = "⚙️ %5min"
 }
@@ -11,9 +7,9 @@ cpu_temperature 0 {
   path = "/sys/class/thermal/thermal_zone0/temp"
   format = "🌡️ %degrees°C"
 }
-cpu_temperature 1 {
-  path = "/sys/class/thermal/thermal_zone1/temp"
-  format = "%degrees°C"
+
+memory {
+  format = "🐏 %used/%total"
 }
 
 disk / {
@@ -40,7 +36,6 @@ time {
 
 order += "load"
 order += "cpu_temperature 0"
-order += "cpu_temperature 1"
 order += "memory"
 order += "disk /"
 order += "disk /home"
