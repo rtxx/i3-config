@@ -100,8 +100,8 @@ bindsym $mod+End exec --no-startup-id "playerctl play-pause; notify-send -t 750 
 bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send -t 750 'Brightness Up' $(xbacklight -get | cut -c -2)"
 bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send -t 750 'Brightness Down' $(xbacklight -get | cut -c -2)"
 
-# Lock screen
-bindsym F12 exec --no-startup-id i3lock -f -i $lockpaper
+# Lock screen and suspend system
+bindsym F12 exec --no-startup-id "i3lock -f -i $lockpaper ; $i3exit suspend"
 
 # Monitor settings
 bindsym $mod+p exec --no-startup-id arandr

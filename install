@@ -1,0 +1,64 @@
+#!/bin/bash
+
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
+  echo "Root is need for copying nanorc and lightdm config to /etc."
+  exit
+fi
+
+currentDate=$(date '+%Y%m%d-%H%M%S')
+backupFolder=backupDotFiles-$currentDate
+tempFolder=/tmp/i3
+userHomeFolder=/home/$SUDO_USER
+
+# get files from git
+git clone https://github.com/rtxx/i3-config.git $tempFolder
+
+# get folder/files from git .config so we can then backup them
+backupItens=$(find $tempFolder/.config -mindepth 1 -maxdepth 1 -type d,f -printf '%f ')
+
+# fix git files permissions
+chown -R $SUDO_USER:$SUDO_USER $tempFolder
+find $tempFolder -type f -print0 | xargs -0 chmod 664
+find $tempFolder -type d -print0 | xargs -0 chmod 775
+
+# add exectute permissions on some scripts
+chmod +x $tempFolder/.config/i3/config.d/scripts/*
+chmod +x $tempFolder/.config/i3/makeconfig
+chmod +x $tempFolder/.config/i3status/makeconfig
+chmod +x $tempFolder/.config/jgmenu/startup
+
+# change current dir to user .config home dir
+cd $userHomeFolder/.config
+
+# make a backup of the files
+sudo -u $SUDO_USER mkdir $backupFolder
+cp -rp $backupItens $backupFolder
+cp -p /etc/nanorc $userHomeFolder/$backupFolder
+cp -p /etc/lightdm/lightdm-gtk-greeter.conf $userHomeFolder/$backupFolder
+
+# and copy them
+cp -rp $tempFolder/.config/* $userHomeFolder/.config
+cp -p $tempFolder/nanorc /etc
+cp -p $tempFolder/lightdm-gtk-greeter.conf /etc/lightdm
+
+# creates/updates common folders
+xdg-user-dirs-update
+
+# sets x keyboard layout
+while true; do
+  read -p "set X keyboard layout to 'pt'? (y/n) " yn
+  echo
+  case $yn in
+    [Yy]* ) localectl set-x11-keymap pt ;;
+    [Nn]* ) break;;
+    * ) echo "Please use yes or no.";;
+  esac
+done
+
+# deletes unwanted files
+rm -rf $tempFolder
+
+echo "Installation completed. Backup folder at $userHomeFolder/$backupFolder."
+echo "Please relog to apply settings."
+exit
