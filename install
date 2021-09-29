@@ -34,11 +34,15 @@ cd $userHomeFolder/.config
 # make a backup of the files
 sudo -u $SUDO_USER mkdir $backupFolder
 cp -rp $backupItens $backupFolder
-cp -p /etc/nanorc $userHomeFolder/$backupFolder
-cp -p /etc/lightdm/lightdm-gtk-greeter.conf $userHomeFolder/$backupFolder
+cp -p $userHomeFolder/.Xresources $userHomeFolder/.config/$backupFolder
+cp -rp $userHomeFolder/.Xresources.d $userHomeFolder/.config/$backupFolder
+cp -p /etc/nanorc $userHomeFolder/.config/$backupFolder
+cp -p /etc/lightdm/lightdm-gtk-greeter.conf $userHomeFolder/.config/$backupFolder
 
 # and copy them
 cp -rp $tempFolder/.config/* $userHomeFolder/.config
+cp -rp $tempFolder/.Xresources.d $userHomeFolder/
+cp -p $tempFolder/.Xresources $userHomeFolder/
 cp -p $tempFolder/nanorc /etc
 cp -p $tempFolder/lightdm-gtk-greeter.conf /etc/lightdm
 
@@ -50,7 +54,7 @@ while true; do
   read -p "set X keyboard layout to 'pt'? (y/n) " yn
   echo
   case $yn in
-    [Yy]* ) localectl set-x11-keymap pt ;;
+    [Yy]* ) localectl set-x11-keymap pt; break;;
     [Nn]* ) break;;
     * ) echo "Please use yes or no.";;
   esac
@@ -59,6 +63,6 @@ done
 # deletes unwanted files
 rm -rf $tempFolder
 
-echo "Installation completed. Backup folder at $userHomeFolder/$backupFolder."
+echo "Installation completed. Backup folder at $userHomeFolder/.config/$backupFolder."
 echo "Please relog to apply settings."
 exit
