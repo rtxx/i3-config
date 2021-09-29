@@ -36,6 +36,8 @@ sudo -u $SUDO_USER mkdir $backupFolder
 cp -rp $backupItens $backupFolder
 cp -p $userHomeFolder/.Xresources $userHomeFolder/.config/$backupFolder
 cp -rp $userHomeFolder/.Xresources.d $userHomeFolder/.config/$backupFolder
+cp -p $userHomeFolder/.xinitc $userHomeFolder/.config/$backupFolder
+cp -p $userHomeFolder/.gtkrc-2.0 $userHomeFolder/.config/$backupFolder
 cp -p /etc/nanorc $userHomeFolder/.config/$backupFolder
 cp -p /etc/lightdm/lightdm-gtk-greeter.conf $userHomeFolder/.config/$backupFolder
 
@@ -43,6 +45,8 @@ cp -p /etc/lightdm/lightdm-gtk-greeter.conf $userHomeFolder/.config/$backupFolde
 cp -rp $tempFolder/.config/* $userHomeFolder/.config
 cp -rp $tempFolder/.Xresources.d $userHomeFolder/
 cp -p $tempFolder/.Xresources $userHomeFolder/
+cp -p $tempFolder/.xinitc $userHomeFolder/
+cp -p $tempFolder/.gtrc-2.0 $userHomeFolder/
 cp -p $tempFolder/nanorc /etc
 cp -p $tempFolder/lightdm-gtk-greeter.conf /etc/lightdm
 

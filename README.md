@@ -39,8 +39,6 @@ systemctl enable ufw
 systemctl enable teamviewerd
 ```
 ### Terminal config
-```echo "TERMINAL=xterm" >> /etc/environment```
-
 The colors and other settings should be already on .Xresources
 
 ### Nano
@@ -75,4 +73,6 @@ Open `lightdm-gtk-greeter-settings-pkexec` and change:
 #### Note
 The config files from ```Xresources```,```i3```,```i3status``` can be easily changed with base16 themes.
 Check for the respectly ```config.d``` (for ```Xresources``` go to ```Xresources.d``` on ~ folder) and go to ```config-theme```.
+
+For better QT color theme, use ```qt5ct-kde``` from AUR. ```https://aur.archlinux.org/packages/qt5ct-kde/```
 
