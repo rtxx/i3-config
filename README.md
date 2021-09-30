@@ -25,6 +25,8 @@ yay -S clipit spotify skypeforlinux-stable-bin thunar-shares-plugin teamviewer y
 ```
 
 ## Configuration
+The ```install``` downloads the files automatically from this repo, meaning you only need to download the ```install``` file. You can do this by curl, ie: ```curl https://raw.githubusercontent.com/rtxx/i3-config/main/install -o install```
+
 Copy the files from this repo and put them in ~.
 
 Change the permissions to execute on scripts folder
