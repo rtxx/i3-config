@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#
+# super simple script to check for arch updates
+
+archUpdatesNumber=$(pacman -Qqu | wc -l)
+archUpdatesPkg=$(pacman -Qqu)
+
+if [[ $archUpdatesNumber -gt 0 ]]; then
+  notify-send "Updates Available" "Total: $archUpdatesNumber\n$archUpdatesPkg"
+  echo "Updates Available" "Total: $archUpdatesNumber\n$archUpdatesPkg"
+else
+  notify-send "No Updates Available" ""
+  echo "No Updates Available" ""
+fi

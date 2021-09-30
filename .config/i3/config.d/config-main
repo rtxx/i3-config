@@ -29,6 +29,8 @@ set $i3services ~/.config/i3/config.d/scripts/i3services
 set $i3-alt-layout ~/.config/i3/config.d/scripts/i3_alternating_layout.py
 # adds blur on wallpaper when a window is visible: https://github.com/rstacruz/feh-blur-wallpaper
 set $feh-blur ~/.config/i3/config.d/scripts/feh-blur
+# simple script to check for updates
+set $check-updates ~/.config/i3/config.d/scripts/check-updates
 
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod4
@@ -141,6 +143,7 @@ bindsym $mod+F2 exec $browser
 bindsym $mod+Insert exec --no-startup-id i3-sensible-terminal -name termfloat -hold -e neofetch
 bindsym $mod+Delete exec i3-sensible-terminal -e htop
 bindsym $mod+F5 exec i3-sensible-terminal -e pkexec dmesg -wH
+bindsym $mod+Shift+U exec $check-updates
 
 # Network related
 bindsym $mod+F9 exec i3-sensible-terminal -e pkexec nethogs
@@ -161,9 +164,8 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nm-applet
 # cute dog, dont kill it :(
 # exec --no-startup-id oneko -dog
-
 exec --no-startup-id jgmenu --at-pointer --hide-on-startup
-
+exec --no-startup-id $check-updates
 #exec --no-startup-id $i3-alt-layout
 #exec --no-startup-id $feh-blur --blur 4 --darken 0 -d
 
@@ -265,7 +267,7 @@ mode "$mode_cpu" {
 ### services menu
 # checks, starts and stops some common services
 bindsym $mod+Ctrl+s mode "$mode_services"
-set $mode_services (1)check (2)start-printing  (3)start-bluetooth (4)start-energy (5)stop-printing  (6)stop-bluetooth (7)stop-energy
+set $mode_services (1)check (2)start-printing  (3)start-bluetooth (4)start-energy (5)stop-printing  (6)stop-bluetooth (7)stop-energy 
 mode "$mode_services" {
   bindsym 1 exec --no-startup-id $i3services check && :, mode "default"
   bindsym 2 exec --no-startup-id $i3services start-printing && :, mode "default"
@@ -442,7 +444,7 @@ gaps outer 8
 # Smart gaps (gaps used if only more than one container on the workspace)
 smart_gaps inverse_outer
 
-# Smart borders (draw borders around container only if it is not the only container on this workspace)
+# Smart borders (draw borders around container only if it is not the only container on this workspace) 
 # on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
 smart_borders on
 #border_radius 2
