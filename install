@@ -50,6 +50,17 @@ cp -p $tempFolder/.gtrc-2.0 $userHomeFolder/
 cp -p $tempFolder/nanorc /etc
 cp -p $tempFolder/lightdm-gtk-greeter.conf /etc/lightdm
 
+# update i3, i3status config
+if [[ -f "$userHomeFolder/.config/i3/config" ]]; then
+  rm $userHomeFolder/.config/i3/config
+fi
+cat $userHomeFolder/.config/i3/config.d/config-main $userHomeFolder/.config/i3/config.d/config-theme > $userHomeFolder/.config/i3/config
+
+if [[ -f "$userHomeFolder/.config/i3status/config" ]]; then
+  rm $userHomeFolder/.config/i3status/config
+fi
+cat $userHomeFolder/.config/i3status/config.d/config-theme $userHomeFolder/.config/i3status/config.d/config-main > $userHomeFolder/.config/i3status/config
+
 # creates/updates common folders
 xdg-user-dirs-update
 
