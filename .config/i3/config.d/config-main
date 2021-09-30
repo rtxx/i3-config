@@ -109,6 +109,9 @@ bindsym $mod+p exec --no-startup-id arandr
 # Printscreen
 bindsym Print exec scrot
 
+# reload picom, sometimes after suspend it stop working, this will kill the process and start it over again
+bindsym $mod+F10 exec --no-startup-id "killall picom ; sleep 2 ; picom -b"
+
 #### Applications Section ####
 # Start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
