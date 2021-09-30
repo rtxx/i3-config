@@ -74,22 +74,22 @@ fi
 cat $userHomeFolder/.config/i3status/config.d/config-theme $userHomeFolder/.config/i3status/config.d/config-main > $userHomeFolder/.config/i3status/config
 echo
 
-echo "Running xdg-user-dirs-update"
+#echo "Running xdg-user-dirs-update"
 # creates/updates common folders
-xdg-user-dirs-update
-echo
+#xdg-user-dirs-update
+#echo
 
-echo "Setting X keyboard to pt"
+#echo "Setting X keyboard to pt"
 # sets x keyboard layout
-while true; do
-  read -p "set X keyboard layout to 'pt'? (y/n) " yn
-  echo
-  case $yn in
-    [Yy]* ) localectl set-x11-keymap pt; break;;
-    [Nn]* ) break;;
-    * ) echo "Please use yes or no.";;
-  esac
-done
+#while true; do
+#  read -p "set X keyboard layout to 'pt'? (y/n) " yn
+#  echo
+#  case $yn in
+#    [Yy]* ) localectl set-x11-keymap pt; break;;
+#    [Nn]* ) break;;
+#    * ) echo "Please use yes or no.";;
+#  esac
+#done
 
 echo "Deleting temp files"
 # deletes unwanted files
