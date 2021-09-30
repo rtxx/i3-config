@@ -11,26 +11,34 @@ backupFolder=backupDotFiles-$currentDate
 tempFolder=/tmp/i3
 userHomeFolder=/home/$SUDO_USER
 
+echo "Getting files from git."
 # get files from git
 git clone https://github.com/rtxx/i3-config.git $tempFolder
+echo
 
 # get folder/files from git .config so we can then backup them
 backupItens=$(find $tempFolder/.config -mindepth 1 -maxdepth 1 -type d,f -printf '%f ')
 
+echo "Fixing git file permissions."
 # fix git files permissions
 chown -R $SUDO_USER:$SUDO_USER $tempFolder
 find $tempFolder -type f -print0 | xargs -0 chmod 664
 find $tempFolder -type d -print0 | xargs -0 chmod 775
+echo
 
+echo "Add +x permissions on some scripts"
 # add exectute permissions on some scripts
 chmod +x $tempFolder/.config/i3/config.d/scripts/*
 chmod +x $tempFolder/.config/i3/makeconfig
 chmod +x $tempFolder/.config/i3status/makeconfig
 chmod +x $tempFolder/.config/jgmenu/startup
+echo
 
 # change current dir to user .config home dir
 cd $userHomeFolder/.config
 
+echo "Making a backup on the current dot files."
+echo "Errors here means nothing to copy, ignore them or copy them manually."
 # make a backup of the files
 sudo -u $SUDO_USER mkdir $backupFolder
 cp -rp $backupItens $backupFolder
@@ -40,7 +48,9 @@ cp -p $userHomeFolder/.xinitc $userHomeFolder/.config/$backupFolder
 cp -p $userHomeFolder/.gtkrc-2.0 $userHomeFolder/.config/$backupFolder
 cp -p /etc/nanorc $userHomeFolder/.config/$backupFolder
 cp -p /etc/lightdm/lightdm-gtk-greeter.conf $userHomeFolder/.config/$backupFolder
+echo
 
+echo "Copying new files to .config folder"
 # and copy them
 cp -rp $tempFolder/.config/* $userHomeFolder/.config
 cp -rp $tempFolder/.Xresources.d $userHomeFolder/
@@ -49,7 +59,9 @@ cp -p $tempFolder/.xinitc $userHomeFolder/
 cp -p $tempFolder/.gtrc-2.0 $userHomeFolder/
 cp -p $tempFolder/nanorc /etc
 cp -p $tempFolder/lightdm-gtk-greeter.conf /etc/lightdm
+echo
 
+echo "Updating i3, i3status config files"
 # update i3, i3status config
 if [[ -f "$userHomeFolder/.config/i3/config" ]]; then
   rm $userHomeFolder/.config/i3/config
@@ -60,10 +72,14 @@ if [[ -f "$userHomeFolder/.config/i3status/config" ]]; then
   rm $userHomeFolder/.config/i3status/config
 fi
 cat $userHomeFolder/.config/i3status/config.d/config-theme $userHomeFolder/.config/i3status/config.d/config-main > $userHomeFolder/.config/i3status/config
+echo
 
+echo "Running xdg-user-dirs-update"
 # creates/updates common folders
 xdg-user-dirs-update
+echo
 
+echo "Setting X keyboard to pt"
 # sets x keyboard layout
 while true; do
   read -p "set X keyboard layout to 'pt'? (y/n) " yn
@@ -75,8 +91,10 @@ while true; do
   esac
 done
 
+echo "Deleting temp files"
 # deletes unwanted files
 rm -rf $tempFolder
+echo
 
 echo "Installation completed. Backup folder at $userHomeFolder/.config/$backupFolder."
 echo "Please relog to apply settings."
