@@ -112,7 +112,7 @@ bindsym $mod+p exec --no-startup-id arandr
 bindsym Print exec scrot
 
 # reload picom, sometimes after suspend it stop working, this will kill the process and start it over again
-bindsym $mod+F10 exec --no-startup-id "killall picom ; sleep 2 ; picom -b"
+bindsym $mod+F10 exec --no-startup-id "notify-send -t 2000 'Compositor' 'Reloading picom' ; killall picom ; sleep 2 ; picom -b"
 
 #### Applications Section ####
 # Start a terminal
@@ -144,6 +144,8 @@ bindsym $mod+Insert exec --no-startup-id i3-sensible-terminal -name termfloat -h
 bindsym $mod+Delete exec i3-sensible-terminal -e htop
 bindsym $mod+F5 exec i3-sensible-terminal -e pkexec dmesg -wH
 bindsym $mod+Shift+U exec $check-updates
+# clipboard manager
+bindsym $mod+c exec --no-startup-id "clipmenu -nf '$base04' -nb '$base00' -sb '$base04' -sf '$base00' -fn 'Fantasque Sans Mono-13' -p '>'"
 
 # Network related
 bindsym $mod+F9 exec i3-sensible-terminal -e pkexec nethogs
@@ -155,7 +157,7 @@ exec --no-startup-id volumeicon
 exec --no-startup-id dunst
 exec --no-startup-id feh --bg-scale $wallpaper
 exec --no-startup-id picom -b
-exec --no-startup-id clipit
+exec --no-startup-id clipmenud
 exec --no-startup-id udiskie --no-automount --tray
 exec --no-startup-id unclutter
 exec --no-startup-id xinput --set-prop "Synaptics TM3053-004" "libinput Tapping Enabled" 1
@@ -246,12 +248,11 @@ mode "$mode_system" {
 }
 
 ### i3cpu-governor menu
-# Show current cpu governor
-bindsym $mod+Ctrl+c exec notify-send -t 750 "CPU Governor $(echo && cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor)"
 # Set the cpu governor
-bindsym $mod+c mode "$mode_cpu"
-set $mode_cpu (1)performance (2)powersave (3)userspace (4)ondemand (5)conservative (6)schedutil
+bindsym $mod+Ctrl+c mode "$mode_cpu"
+set $mode_cpu (0)check (1)performance (2)powersave (3)userspace (4)ondemand (5)conservative (6)schedutil
 mode "$mode_cpu" {
+  bindsym 0 exec notify-send -t 750 "CPU Governor $(echo && cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor)" && :, mode "default"
   bindsym 1 exec --no-startup-id pkexec $i3cpu-governor performance && :, mode "default"
   bindsym 2 exec --no-startup-id pkexec $i3cpu-governor powersave && :, mode "default"
   bindsym 3 exec --no-startup-id pkexec $i3cpu-governor userspace && :, mode "default"
@@ -267,7 +268,7 @@ mode "$mode_cpu" {
 ### services menu
 # checks, starts and stops some common services
 bindsym $mod+Ctrl+s mode "$mode_services"
-set $mode_services (1)check (2)start-printing  (3)start-bluetooth (4)start-energy (5)stop-printing  (6)stop-bluetooth (7)stop-energy 
+set $mode_services (1)check (2)start-printing  (3)start-bluetooth (4)start-energy (5)stop-printing  (6)stop-bluetooth (7)stop-energy
 mode "$mode_services" {
   bindsym 1 exec --no-startup-id $i3services check && :, mode "default"
   bindsym 2 exec --no-startup-id $i3services start-printing && :, mode "default"
@@ -444,7 +445,7 @@ gaps outer 8
 # Smart gaps (gaps used if only more than one container on the workspace)
 smart_gaps inverse_outer
 
-# Smart borders (draw borders around container only if it is not the only container on this workspace) 
+# Smart borders (draw borders around container only if it is not the only container on this workspace)
 # on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
 smart_borders on
 #border_radius 2
