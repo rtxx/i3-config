@@ -11,7 +11,7 @@
 
 Base packages
 ```
-pacman -S i3-gaps i3status i3lock python-i3ipc dmenu noto-fonts noto-fonts-emoji ttf-fantasque-sans-mono terminus-font xterm htop nethogs arandr volumeicon dunst feh picom udiskie unclutter xorg-xinput xfce4-power-manager tlp cpupower polkit polkit-gnome polkit-qt5 networkmanager nm-connection-editor network-manager-applet breeze breeze-gtk qt5ct lxappearance capitaine-cursors arc-icon-theme archlinux-wallpaper thunar tumbler ffmpegthumbnailer thunar-archive-plugin thunar-media-tags-plugin mousepad firefox neofetch scrot xdg-user-dirs lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings git gvfs gvfs-smb gvfs-mtp powertop pulseaudio pulseaudio-alsa alsa-utils pavucontrol ufw gufw gnome-keyring seahorse nano-syntax-highlighting xarchiver unrar xsettingsd
+pacman -S i3-gaps i3status i3lock python-i3ipc dmenu clipmenu noto-fonts noto-fonts-emoji ttf-fantasque-sans-mono terminus-font xterm htop nethogs arandr volumeicon dunst feh picom udiskie unclutter xorg-xinput xfce4-power-manager tlp cpupower polkit polkit-gnome polkit-qt5 networkmanager nm-connection-editor network-manager-applet breeze breeze-gtk qt5ct lxappearance capitaine-cursors arc-icon-theme archlinux-wallpaper thunar tumbler ffmpegthumbnailer thunar-archive-plugin thunar-media-tags-plugin mousepad firefox neofetch scrot xdg-user-dirs lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings git gvfs gvfs-smb gvfs-mtp powertop pulseaudio pulseaudio-alsa alsa-utils pavucontrol ufw gufw gnome-keyring seahorse nano-syntax-highlighting xarchiver unrar xsettingsd
 ```
 Install ```yay```
 ```
@@ -21,7 +21,7 @@ cd yay && makepkg -si
 ```
 AUR packages
 ```
-yay -S clipit spotify skypeforlinux-stable-bin thunar-shares-plugin teamviewer ytfzf
+yay -S spotify skypeforlinux-stable-bin thunar-shares-plugin teamviewer ytfzf
 ```
 
 ## Configuration
