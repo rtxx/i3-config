@@ -19,3 +19,13 @@ URxvt.keysym.Control-Up:     \033[1;5A
 URxvt.keysym.Control-Down:   \033[1;5B
 URxvt.keysym.Control-Left:   \033[1;5D
 URxvt.keysym.Control-Right:  \033[1;5C
+
+! https://wiki.archlinux.org/title/Rxvt-unicode#Cut_and_paste
+! URxvt will now copy/paste with Alt-Control-c/v
+! to copy selected text automatically use
+! URxvt.perl-ext-common: ... , selection-to-clipboard, ...
+URxvt.perl-ext-common: clipboard
+URxvt.keysym.Alt-Control-c: perl:clipboard:copy
+URxvt.keysym.Alt-Control-v: perl:clipboard:paste
+
+
