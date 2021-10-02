@@ -143,7 +143,7 @@ bindsym $mod+F2 exec $browser
 bindsym $mod+Insert exec --no-startup-id i3-sensible-terminal -name termfloat -hold -e neofetch
 bindsym $mod+Delete exec i3-sensible-terminal -e htop
 bindsym $mod+F5 exec i3-sensible-terminal -e pkexec dmesg -wH
-bindsym $mod+Shift+u exec --no-startup-id i3-sensible-terminal -name termfloat -hold -e $check-updates
+bindsym $mod+Shift+u exec --no-startup-id $check-updates
 # clipboard manager
 bindsym $mod+c exec --no-startup-id "clipmenu -nf '$base04' -nb '$base00' -sb '$base04' -sf '$base00' -fn 'Fantasque Sans Mono-13' -p '>'"
 
