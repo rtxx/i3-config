@@ -143,7 +143,7 @@ bindsym $mod+F2 exec $browser
 bindsym $mod+Insert exec --no-startup-id i3-sensible-terminal -name termfloat -hold -e neofetch
 bindsym $mod+Delete exec i3-sensible-terminal -e htop
 bindsym $mod+F5 exec i3-sensible-terminal -e pkexec dmesg -wH
-bindsym $mod+Shift+U exec $check-updates
+bindsym $mod+Shift+u exec --no-startup-id i3-sensible-terminal -name termfloat -hold -e $check-updates
 # clipboard manager
 bindsym $mod+c exec --no-startup-id "clipmenu -nf '$base04' -nb '$base00' -sb '$base04' -sf '$base00' -fn 'Fantasque Sans Mono-13' -p '>'"
 
@@ -165,7 +165,7 @@ exec --no-startup-id xfce4-power-manager
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nm-applet
 # cute dog, dont kill it :(
-# exec --no-startup-id oneko -dog
+#exec --no-startup-id oneko -dog
 exec --no-startup-id jgmenu --at-pointer --hide-on-startup
 exec --no-startup-id $check-updates
 #exec --no-startup-id $i3-alt-layout
@@ -187,8 +187,8 @@ for_window [workspace=$ws22] layout tabbed
 #bindsym F1 [instance="xterm"] scratchpad show
 
 # Open specific applications in floating mode
-for_window [instance="termfloat"] floating enable, resize set 1000 500, move absolute position center
-for_window [instance="termfloat-oneliner"] floating enable, resize set 1024 96, move absolute position center
+for_window [instance="termfloat"] floating enable, resize set 1000 500, move position center
+for_window [instance="termfloat-oneliner"] floating enable, resize set 1024 96, move position center
 for_window [title="alsamixer"] floating enable, border pixel 1
 for_window [class="Clipgrab"] floating enable
 for_window [title="File Transfer*"] floating enable
