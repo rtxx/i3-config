@@ -144,6 +144,7 @@ bindsym $mod+Insert exec --no-startup-id i3-sensible-terminal -name termfloat -h
 bindsym $mod+Delete exec i3-sensible-terminal -e htop
 bindsym $mod+F5 exec i3-sensible-terminal -e pkexec dmesg -wH
 bindsym $mod+Shift+u exec --no-startup-id $check-updates
+bindsym $mod+Ctrl+space exec --no-startup-id sh ~/.config/i3/config.d/scripts/emojipick
 # clipboard manager
 bindsym $mod+c exec --no-startup-id "clipmenu -nf '$base04' -nb '$base00' -sb '$base04' -sf '$base00' -fn 'Fantasque Sans Mono-13' -p '>'"
 
@@ -165,9 +166,8 @@ exec --no-startup-id xfce4-power-manager
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nm-applet
 # cute dog, dont kill it :(
-#exec --no-startup-id oneko -dog
+exec --no-startup-id oneko -dog
 exec --no-startup-id jgmenu --at-pointer --hide-on-startup
-exec --no-startup-id $check-updates
 #exec --no-startup-id $i3-alt-layout
 #exec --no-startup-id $feh-blur --blur 4 --darken 0 -d
 
@@ -518,4 +518,5 @@ bar {
         binding_mode        $base00 $base0A $base00
     }
 }
+
 
