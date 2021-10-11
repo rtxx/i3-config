@@ -12,11 +12,11 @@ memory {
   format = "🐏 %used/%total"
 }
 
-disk / {
+disk "/" {
   format = "📁 / %free"
 }
 
-disk /home {
+disk "/home" {
   format = "~ %free"
 }
 
