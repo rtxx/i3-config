@@ -46,6 +46,7 @@ cp -p $userHomeFolder/.Xresources $userHomeFolder/.config/$backupFolder
 cp -rp $userHomeFolder/.Xresources.d $userHomeFolder/.config/$backupFolder
 cp -p $userHomeFolder/.xinitrc $userHomeFolder/.config/$backupFolder
 cp -p $userHomeFolder/.gtkrc-2.0 $userHomeFolder/.config/$backupFolder
+cp -p $userHomeFolder/.bashrc $userHomeFolder/.config/$backupFolder
 cp -p /etc/nanorc $userHomeFolder/.config/$backupFolder
 cp -p /etc/lightdm/lightdm-gtk-greeter.conf $userHomeFolder/.config/$backupFolder
 echo
@@ -57,6 +58,7 @@ cp -rp $tempFolder/.Xresources.d $userHomeFolder/
 cp -p $tempFolder/.Xresources $userHomeFolder/
 cp -p $tempFolder/.xinitrc $userHomeFolder/
 cp -p $tempFolder/.gtkrc-2.0 $userHomeFolder/
+cp -p $tempFolder/.bashrc $userHomeFolder/
 cp -p $tempFolder/nanorc /etc
 cp -p $tempFolder/lightdm-gtk-greeter.conf /etc/lightdm
 echo
