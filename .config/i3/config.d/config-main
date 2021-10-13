@@ -7,10 +7,10 @@
 set $file_manager thunar
 
 # default web browser
-set $browser firefox
+set $browser google-chrome-stable
 
 #i3 bar
-set $i3bar i3status
+set $i3bar py3status
 
 # wallpaper path
 set $wallpaper ~/.config/i3/config.d/wallpapers/breezeblack.png
@@ -71,36 +71,39 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
+# test
+bindsym $mod+Shift+a exec notify-send -h string:history-ignore:true SUMMARY BODY
+
 #### Sound Section ####
 # Opens alsamixer
 bindsym $mod+Shift+m exec i3-sensible-terminal -class termfloat -e alsamixer
 
 # Change volume
-bindsym XF86AudioRaiseVolume exec "amixer -q set Master 5%+; notify-send -t 750 'Volume Up' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }')"
-bindsym XF86AudioLowerVolume exec "amixer -q set Master 5%-; notify-send -t 750 'Volume Down' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }')"
-bindsym XF86AudioMute exec "amixer set Master toggle; notify-send -t 750 'Volume Toggle' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $4 }')"
+bindsym XF86AudioRaiseVolume exec "amixer -q set Master 5%+; notify-send -c 'history-ignore' -h string:x-dunst-stack-tag:audio -h int:value:$(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }') -t 750 'Volume Up' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }')"
+bindsym XF86AudioLowerVolume exec "amixer -q set Master 5%-; notify-send -c 'history-ignore' -h string:x-dunst-stack-tag:audio -h int:value:$(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }') -t 750 'Volume Down' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }')"
+bindsym XF86AudioMute exec "amixer set Master toggle; notify-send -t 750 -c 'history-ignore' -h string:x-dunst-stack-tag:audio 'Volume Toggle' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $4 }')"
 
 # Toogle mic
-bindsym XF86AudioMicMute exec --no-startup-id "pactl set-source-mute 1 toggle; notify-send -t 750 'Volume' 'Mic Toogle' "
+bindsym XF86AudioMicMute exec --no-startup-id "pactl set-source-mute 1 toggle; notify-send -c 'history-ignore' -h string:x-dunst-stack-tag:audio -t 750 'Volume' 'Mic Toogle' "
 
 # Change track with playerctl
-bindsym XF86AudioNext exec --no-startup-id "playerctl next; notify-send -t 750 'Media Player' 'Next Song'"
-bindsym XF86AudioPause exec --no-startup-id "playerctl pause; notify-send -t 750 'Media Player' 'Pause'"
-bindsym XF86AudioPlay exec --no-startup-id "playerctl play-pause; notify-send -t 750 'Media Player' 'Toggle Play/Pay'"
-bindsym XF86AudioPrev exec --no-startup-id "playerctl previous; notify-send -t 750 'Media Player' 'Previous Song'"
+bindsym XF86AudioNext exec --no-startup-id "playerctl next; notify-send -c 'history-ignore' -h string:x-dunst-stack-tag:audio -t 750 'Media Player' 'Next Song'"
+bindsym XF86AudioPause exec --no-startup-id "playerctl pause; notify-send -c 'history-ignore' -h string:x-dunst-stack-tag:audio -t 750 'Media Player' 'Pause'"
+bindsym XF86AudioPlay exec --no-startup-id "playerctl play-pause; notify-send -c 'history-ignore' -h string:x-dunst-stack-tag:audio -t 750 'Media Player' 'Toggle Play/Pay'"
+bindsym XF86AudioPrev exec --no-startup-id "playerctl previous; notify-send -c 'history-ignore' -h string:x-dunst-stack-tag:audio -t 750 'Media Player' 'Previous Song'"
 
 # Change track with other keys
 #PageUp
-bindsym $mod+Prior exec --no-startup-id "playerctl next; notify-send -t 750 'Media Player' 'Next Song'"
+bindsym $mod+Prior exec --no-startup-id "playerctl next; notify-send -c 'history-ignore' -h string:x-dunst-stack-tag:audio -t 750 'Media Player' 'Next Song'"
 #PageDown
-bindsym $mod+Next exec --no-startup-id "playerctl previous; notify-send -t 750 'Media Player' 'Previous Song'"
+bindsym $mod+Next exec --no-startup-id "playerctl previous; notify-send -c 'history-ignore' -h string:x-dunst-stack-tag:audio -t 750 'Media Player' 'Previous Song'"
 #End
-bindsym $mod+End exec --no-startup-id "playerctl play-pause; notify-send -t 750 'Media Player' 'Toggle Play/Pause'"
+bindsym $mod+End exec --no-startup-id "playerctl play-pause; notify-send -c 'history-ignore' -h string:x-dunst-stack-tag:audio -t 750 'Media Player' 'Toggle Play/Pause'"
 
 #### Screen Section ####
 # Screen brightness controls
-bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send -t 750 'Brightness Up' $(xbacklight -get | cut -c -2)"
-bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send -t 750 'Brightness Down' $(xbacklight -get | cut -c -2)"
+bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send -c 'history-ignore' -h string:x-dunst-stack-tag:backlight -h int:value:$(xbacklight -get | cut -c -2) -t 750 'Brightness Up' $(xbacklight -get | cut -c -2)"
+bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send -c 'history-ignore' -h string:x-dunst-stack-tag:backlight -h int:value:$(xbacklight -get | cut -c -2) -t 750 'Brightness Down' $(xbacklight -get | cut -c -2)"
 
 # Lock screen and suspend system
 bindsym F12 exec --no-startup-id "i3lock -f -i $lockpaper ; $i3exit suspend"
@@ -112,7 +115,7 @@ bindsym $mod+p exec --no-startup-id arandr
 bindsym Print exec scrot
 
 # reload picom, sometimes after suspend it stop working, this will kill the process and start it over again
-bindsym $mod+F10 exec --no-startup-id "notify-send -t 2000 'Compositor' 'Reloading picom' ; killall picom ; sleep 2 ; picom -b"
+bindsym $mod+F10 exec --no-startup-id "notify-send -c 'history-ignore' -u 'critical' -t 2000 'Compositor' 'Reloading picom' ; killall picom ; sleep 2 ; picom -b"
 
 #### Applications Section ####
 # Start a terminal
@@ -518,5 +521,4 @@ bar {
         binding_mode        $base00 $base0A $base00
     }
 }
-
 
