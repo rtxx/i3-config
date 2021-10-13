@@ -106,7 +106,7 @@ bindsym XF86AudioMute exec --no-startup-id \
             -c 'history-ignore' \
             -h string:x-dunst-stack-tag:audio \
             -t 750 \
-            'Volume Toggle' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $4 }')"
+            'Volume Toggle. Sound?' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $4 }')"
 
 # Toogle mic
 bindsym XF86AudioMicMute exec --no-startup-id \
@@ -115,7 +115,8 @@ bindsym XF86AudioMicMute exec --no-startup-id \
             -c 'history-ignore' \
             -h string:x-dunst-stack-tag:audio \
             -t 750 \
-            'Volume' 'Mic Toogle'"
+            'Mic Toogle. Mute?' $(pactl get-source-mute 1 | cut -c 7- )"
+            # $(pactl get-source-mute 1)"
 
 # Change track with playerctl
 bindsym XF86AudioNext exec --no-startup-id \
