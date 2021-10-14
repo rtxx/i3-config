@@ -90,7 +90,7 @@ bindsym XF86AudioRaiseVolume exec --no-startup-id \
             -h string:x-dunst-stack-tag:audio \
             -t 750 \
             -h int:value:$(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }') \
-            'Volume Up' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }')"
+            'Volume Up'"
 bindsym XF86AudioLowerVolume exec --no-startup-id \
           "amixer -q set Master 5%-; \
           $i3sounds volume; \
@@ -99,7 +99,7 @@ bindsym XF86AudioLowerVolume exec --no-startup-id \
             -h string:x-dunst-stack-tag:audio \
             -t 750 \
             -h int:value:$(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }') \
-            'Volume Down' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }')"
+            'Volume Down'"
 
 # Toggle volume
 bindsym XF86AudioMute exec --no-startup-id \
@@ -186,7 +186,7 @@ bindsym XF86MonBrightnessUp exec --no-startup-id \
             -h string:x-dunst-stack-tag:backlight \
             -h int:value:$(xbacklight -get | cut -c -2) \
             -t 750 \
-            'Brightness Up' $(xbacklight -get | cut -c -2)"
+            'Brightness Up'"
 bindsym XF86MonBrightnessDown exec --no-startup-id \
           "xbacklight -dec 10; \
           notify-send \
@@ -194,7 +194,7 @@ bindsym XF86MonBrightnessDown exec --no-startup-id \
             -h string:x-dunst-stack-tag:backlight \
             -h int:value:$(xbacklight -get | cut -c -2) \
             -t 750 \
-            'Brightness Down' $(xbacklight -get | cut -c -2)"
+            'Brightness Down'"
 
 # Lock screen and suspend system
 bindsym F12 exec --no-startup-id "$i3sounds power-unplug & i3lock -f -i $lockpaper ; $i3exit suspend"
@@ -433,17 +433,52 @@ bindsym --whole-window $mod+button4 workspace next_on_output
 bindsym --whole-window $mod+button5 workspace prev_on_output
 
 # split orientation
-bindsym $mod+h split h; exec notify-send -t 750 'i3wm' 'Tile Horizontally'
-bindsym $mod+v split v; exec notify-send -t 750 'i3wm' 'Tile Vertically'
-bindsym $mod+q split toggle; exec notify-send -t 750 'i3wm' 'Toggle Split Orientation'
+bindsym $mod+h split h; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Tile Horizontally'"
+bindsym $mod+v split v; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Tile Vertically'"
+bindsym $mod+q split toggle; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Toggle Split Orientation'"
 
 # toggle fullscreen mode for the focused container
-bindsym $mod+f fullscreen toggle; exec notify-send -t 750 'i3wm' 'Toggle Fullscreen'
+bindsym $mod+f fullscreen toggle; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Toggle Fullscreen'"
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking; exec notify-send -t 750 'i3wm' 'Container Layout: Stacking'
-bindsym $mod+w layout tabbed; exec notify-send -t 750 'i3wm' 'Container Layout: Tabbed'
-bindsym $mod+e layout toggle split; exec notify-send -t 750 'i3wm' 'Container Layout: Split'
+bindsym $mod+s layout stacking; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Container Layout: Stacking'"
+bindsym $mod+w layout tabbed; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Container Layout: Tabbed'"
+bindsym $mod+e layout toggle split; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Container Layout: Split'"
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
