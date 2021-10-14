@@ -22,3 +22,5 @@ alias i3-remakeconfig='bash ~/.config/i3/makeconfig'
 
 # i3status - remake config
 alias i3status-remakeconfig='bash ~/.config/i3status/makeconfig'
+
+alias help-pacman='bash ~/.config/i3/config.d/scripts/help-pacman'
