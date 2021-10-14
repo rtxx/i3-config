@@ -1,0 +1,45 @@
+#!/bin/bash
+# yaru sounds is from ubuntu. I got it from this git repo: https://github.com/ubuntu/yaru. thanks!
+
+player=paplay
+soundsFolder=~/.config/i3/config.d/scripts/i3sounds.d/yaru
+case "$1" in
+    default)
+        $player $soundsFolder/bell.oga
+        ;;
+    volume)
+        $player $soundsFolder/audio-volume-change.oga
+        ;;
+    question)
+        $player $soundsFolder/dialog-question.oga
+        ;;
+    complete)
+        $player $soundsFolder/complete.oga
+        ;;
+    error)
+        $player $soundsFolder/dialog-error.oga
+        ;;
+    device-on)
+        $player $soundsFolder/device-added.oga
+        ;;
+    device-off)
+        $player $soundsFolder/device-removed.oga
+        ;;
+    login)
+        $player $soundsFolder/desktop-login.oga
+        ;;
+    logout)
+        $player $soundsFolder/desktop-logoff.oga
+        ;;
+    power-plug)
+        $player $soundsFolder/power-plug.oga
+        ;;
+    power-unplug)
+        $player $soundsFolder/power-unplug.oga
+        ;;
+    *)
+        echo "Usage: $0 [default|volume|question|complete|error|device-on|device-off|login|logout|power-plug|power-unplug]"
+        exit 2
+esac
+
+exit 0

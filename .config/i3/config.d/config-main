@@ -25,12 +25,15 @@ set $i3exit ~/.config/i3/config.d/scripts/i3exit
 set $i3cpu-governor ~/.config/i3/config.d/scripts/i3cpu-governor
 # i3services is a script to start/stop some services: https://github.com/rtxx/i3-config
 set $i3services ~/.config/i3/config.d/scripts/i3services
+# simpe notifications sounds script
+set $i3sounds ~/.config/i3/config.d/scripts/i3sounds
 # Scripts to open new windows in i3wm using alternating layouts (splith/splitv) for each new window. : https://github.com/olemartinorg/i3-alternating-layout
 set $i3-alt-layout ~/.config/i3/config.d/scripts/i3_alternating_layout.py
 # adds blur on wallpaper when a window is visible: https://github.com/rstacruz/feh-blur-wallpaper
 set $feh-blur ~/.config/i3/config.d/scripts/feh-blur
 # simple script to check for updates
 set $check-updates ~/.config/i3/config.d/scripts/check-updates
+
 
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod4
@@ -72,10 +75,7 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # test
-bindsym $mod+Shift+a exec notify-send \
-                            -h string:bgcolor:$base00 \
-                            -h string:fgcolor:$base05 \
-                            SUMMARY BODY
+bindsym $mod+Shift+a exec "$i3sounds default"
 
 #### Sound Section ####
 # Opens alsamixer
@@ -84,6 +84,7 @@ bindsym $mod+Shift+m exec i3-sensible-terminal -class termfloat -e alsamixer
 # Change volume
 bindsym XF86AudioRaiseVolume exec --no-startup-id \
           "amixer -q set Master 5%+; \
+          $i3sounds volume; \
           notify-send \
             -c 'history-ignore' \
             -h string:x-dunst-stack-tag:audio \
@@ -92,6 +93,7 @@ bindsym XF86AudioRaiseVolume exec --no-startup-id \
             'Volume Up' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }')"
 bindsym XF86AudioLowerVolume exec --no-startup-id \
           "amixer -q set Master 5%-; \
+          $i3sounds volume; \
           notify-send \
             -c 'history-ignore' \
             -h string:x-dunst-stack-tag:audio \
@@ -102,6 +104,7 @@ bindsym XF86AudioLowerVolume exec --no-startup-id \
 # Toggle volume
 bindsym XF86AudioMute exec --no-startup-id \
           "amixer set Master toggle; \
+          $i3sounds volume; \
           notify-send \
             -c 'history-ignore' \
             -h string:x-dunst-stack-tag:audio \
@@ -111,6 +114,7 @@ bindsym XF86AudioMute exec --no-startup-id \
 # Toogle mic
 bindsym XF86AudioMicMute exec --no-startup-id \
           "pactl set-source-mute 1 toggle; \
+          $i3sounds volume; \
           notify-send \
             -c 'history-ignore' \
             -h string:x-dunst-stack-tag:audio \
@@ -193,7 +197,7 @@ bindsym XF86MonBrightnessDown exec --no-startup-id \
             'Brightness Down' $(xbacklight -get | cut -c -2)"
 
 # Lock screen and suspend system
-bindsym F12 exec --no-startup-id "i3lock -f -i $lockpaper ; $i3exit suspend"
+bindsym F12 exec --no-startup-id "$i3sounds power-unplug & i3lock -f -i $lockpaper ; $i3exit suspend"
 
 # Monitor settings
 bindsym $mod+p exec --no-startup-id arandr
@@ -204,11 +208,11 @@ bindsym Print exec scrot
 # reload picom, sometimes after suspend it stop working, this will kill the process and start it over again
 bindsym $mod+F10 exec --no-startup-id \
           "notify-send \
-          -c 'history-ignore' \
-          -u 'critical' \
-          -t 2000 \
-          'Compositor' 'Reloading picom';\
-          killall picom ; sleep 2 ; picom -b"
+            -c 'history-ignore' \
+            -u 'critical' \
+            -t 2000 \
+            'Compositor' 'Reloading picom'; \
+          killall picom ; sleep 2 ; picom -b ; $i3sounds complete"
 
 # notification daemon - dunst shortcuts
 # Close notification.
@@ -252,13 +256,13 @@ bindsym $mod+F2 exec $browser
 bindsym $mod+Insert exec --no-startup-id i3-sensible-terminal -name termfloat -hold -e neofetch
 bindsym $mod+Delete exec i3-sensible-terminal -e htop
 bindsym $mod+F5 exec i3-sensible-terminal -e pkexec dmesg -wH
-bindsym $mod+Shift+u exec --no-startup-id $check-updates
+bindsym $mod+Shift+u exec --no-startup-id "$i3sounds question & $check-updates ; $i3sounds complete"
 bindsym $mod+Ctrl+space exec --no-startup-id sh ~/.config/i3/config.d/scripts/emojipick
 # clipboard manager
 bindsym $mod+c exec --no-startup-id "clipmenu -nf '$base05' -nb '$base00' -sb '$base05' -sf '$base00' -fn 'Fantasque Sans Mono-13' -p '>'"
 
 # Network related
-bindsym $mod+F9 exec i3-sensible-terminal -e pkexec nethogs
+bindsym $mod+F9 exec "$i3sounds question & i3-sensible-terminal -e pkexec nethogs"
 bindsym $mod+Shift+w exec --no-startup-id i3-sensible-terminal -name termfloat -e nmtui
 
 # Autostart applications
@@ -346,12 +350,12 @@ bindsym $mod+0 mode "$mode_system"
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 mode "$mode_system" {
   bindsym l exec --no-startup-id i3lock -f -i $lockpaper #i3exit lock, mode "default"
-  bindsym s exec --no-startup-id $i3exit suspend, mode "default"
-  bindsym u exec --no-startup-id $i3exit switch_user, mode "default"
-  bindsym e exec --no-startup-id i3-msg exit, mode "default"
-  bindsym h exec --no-startup-id $i3exit hibernate, mode "default"
-  bindsym r exec --no-startup-id $i3exit reboot, mode "default"
-  bindsym Shift+s exec --no-startup-id $i3exit shutdown, mode "default"
+  bindsym s exec --no-startup-id "$i3sounds power-unplug & $i3exit suspend", mode "default"
+  bindsym u exec --no-startup-id "$i3sounds power-unplug & $i3exit switch_user", mode "default"
+  bindsym e exec --no-startup-id "$i3sounds power-unplug & i3-msg exit", mode "default"
+  bindsym h exec --no-startup-id "$i3sounds power-unplug & $i3exit hibernate", mode "default"
+  bindsym r exec --no-startup-id "$i3sounds power-unplug & $i3exit reboot", mode "default"
+  bindsym Shift+s exec --no-startup-id "$i3sounds power-unplug & $i3exit shutdown", mode "default"
 
   # exit system mode: "Enter" or "Escape"
   bindsym Return mode "default"
