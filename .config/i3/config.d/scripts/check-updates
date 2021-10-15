@@ -34,11 +34,12 @@ updates () {
 }
 
 updatesAUR () {
-  updatesAUR=$(yay -Sua)
-  exitStatus=$?
-  if [ "$exitStatus" -eq 1 ]; then
-    notify-send "AUR Updates Available" "$updatesAUR"
-    echo "AUR Updates Available."
+  updatesAUR=$(yay -Qau)
+  updatesNumberAUR=$(yay -Qau | wc -l)
+  #exitStatus=$?
+  if [ "$updatesNumberAUR" -gt 0 ]; then
+    notify-send "AUR Updates Available" "Total: $updatesNumberAUR\n$updatesAUR"
+    echo "AUR Updates Available, Total: $updatesNumberAUR"
     echo "$updatesAUR"
     updatesAURExit=0
   else
