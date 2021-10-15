@@ -1,17 +1,60 @@
 #!/usr/bin/sh
 #
-# super simple script to check for arch updates
+# super simple script to check for arch updates. uses 'checkupdates' from pacman-contrib
 
-pkexec sh -c "yay -Sy"
-archUpdatesNumber=$(yay -Qqu | wc -l)
-archUpdatesPkg=$(yay -Qqu)
+# check if dependencies are met
+dependencies=("pacman-contrib" "yay")
+for pkg in ${dependencies[@]}; do
+  checkDependency=$(pacman -Q $pkg)
+  exitStatus=$?
+  if [ "$exitStatus" -eq 1 ]; then
+    notify-send "Error !" "Please install '$pkg' to check for updates"
+    echo "Error ! Please install '$pkg'"
+    exit 2
+  fi
+done
 
-if [[ $archUpdatesNumber -gt 0 ]]; then
-  notify-send "Updates Available" "Total: $archUpdatesNumber\n$archUpdatesPkg"
-  echo "Updates Available"
-  echo "Total: $archUpdatesNumber"
-  echo $archUpdatesPkg
-else
-  notify-send "No Updates Available" ""
-  echo "No Updates Available" ""
+notify-send -t 750 "Getting Updates..."
+echo "Getting Updates..."
+
+updates () {
+  updates=$(checkupdates)
+  updatesExitStatus=$?
+  if [ "$updatesExitStatus" -eq 0 ]; then
+    updatesNumber=$(checkupdates | wc -l)
+    notify-send "Updates Available" "Total: $updatesNumber\n$updates"
+    echo "Updates Available, Total: $updatesNumber"
+    echo "$updates"
+    updatesExit=0
+  else
+    notify-send "No Updates Available" ""
+    echo "No Updates Available."
+    updatesExit=2
+  fi
+}
+
+updatesAUR () {
+  updatesAUR=$(yay -Sua)
+  exitStatus=$?
+  if [ "$exitStatus" -eq 1 ]; then
+    notify-send "AUR Updates Available" "$updatesAUR"
+    echo "AUR Updates Available."
+    echo "$updatesAUR"
+    updatesAURExit=0
+  else
+    notify-send "No AUR Updates Available" ""
+    echo "No AUR Updates Available."
+    updatesAURExit=2
+  fi
+}
+
+updates
+updatesAUR
+
+if [ "$updatesExit" -eq 0 ] || [ "$updatesAURExit" -eq 0 ]; then
+    exit 0
+  else
+    exit 2
 fi
+
+exit 2

@@ -1,6 +1,18 @@
 #!/bin/bash
 # yaru sounds is from ubuntu. I got it from this git repo: https://github.com/ubuntu/yaru. thanks!
 
+# check if dependencies are met
+dependencies=("libpulse")
+for pkg in ${dependencies[@]}; do
+  checkDependency=$(pacman -Q $pkg)
+  exitStatus=$?
+  if [ "$exitStatus" -eq 1 ]; then
+    notify-send "Error !" "Please install '$pkg' to play notification sound or change the default player in i3sounds"
+    echo "Error ! Please install '$pkg' to play notification sound or change the default player in i3sounds"
+    exit 2
+  fi
+done
+
 player=paplay
 soundsFolder=~/.config/i3/config.d/scripts/i3sounds.d/yaru
 case "$1" in
