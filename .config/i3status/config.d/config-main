@@ -16,9 +16,11 @@ disk "/" {
   format = "📁 / %free"
 }
 
-disk "/home" {
-  format = "~ %free"
-}
+#disk "/home" {
+#  format = "~ %free"
+#}
+
+
 
 ethernet enp0s25 {
   format_up = "🌐 E: %ip"
