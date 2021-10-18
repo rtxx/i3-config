@@ -36,6 +36,13 @@ time {
   format = "⌚ %d/%m/%y %H:%M:%S"
 }
 
+external_script {
+  cache_timeout = 600
+  format = "{output}"
+  script_path = "~/.config/i3/config.d/scripts/check-updates -b -n"
+}
+
+order += "external_script"
 order += "load"
 order += "cpu_temperature 0"
 order += "memory"

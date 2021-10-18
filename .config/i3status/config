@@ -1,12 +1,12 @@
 ## Base16is Breeze Dark theme
 ## author : rtxx
 general {
-        interval = 5
+    interval = 5
 	output_format = "i3bar"
 	colors = true
 	color_good = "#27ae60"
 	color_bad = "#da4453"
-       	color_degraded = "#fdbc4b"
+    color_degraded = "#fdbc4b"
 }
 
 load {
@@ -46,6 +46,13 @@ time {
   format = "⌚ %d/%m/%y %H:%M:%S"
 }
 
+external_script {
+  cache_timeout = 600
+  format = "{output}"
+  script_path = "~/.config/i3/config.d/scripts/check-updates -b -n"
+}
+
+order += "external_script"
 order += "load"
 order += "cpu_temperature 0"
 order += "memory"
