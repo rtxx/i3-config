@@ -49,8 +49,9 @@ time {
 external_script {
   cache_timeout = 600
   format = "{output}"
-  script_path = "~/.config/i3/config.d/scripts/check-updates -b -n"
+  script_path = "~/.config/i3/config.d/scripts/check-updates -b"
   on_click 1 = "exec i3-sensible-terminal -name termfloat -hold -e yay"
+  on_click 3 = refresh
 }
 
 order += "external_script"

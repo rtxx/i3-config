@@ -1,4 +1,4 @@
 ! color scheme
 #include ".Xresources.d/colors/breeze-dark.Xresources"
-! fonts
-#include ".Xresources.d/fonts"
+! config
+#include ".Xresources.d/config"

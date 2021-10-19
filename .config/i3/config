@@ -3,20 +3,14 @@
 # Based on Manjaro i3 config file
 
 #### General Settings ####
-## default applications
-# default terminal
-# add/change /etc/environment TERMINAL=xterm
 # default file manager
 set $file_manager thunar
+
 # default web browser
-set $browser firefox
-# default media player
-set $media_player spotify
-# default chat app
-set $chat skypeforlinux
+set $browser google-chrome-stable
 
 #i3 bar
-set $i3bar i3status
+set $i3bar py3status
 
 # wallpaper path
 set $wallpaper ~/.config/i3/config.d/wallpapers/breezeblack.png
@@ -31,10 +25,15 @@ set $i3exit ~/.config/i3/config.d/scripts/i3exit
 set $i3cpu-governor ~/.config/i3/config.d/scripts/i3cpu-governor
 # i3services is a script to start/stop some services: https://github.com/rtxx/i3-config
 set $i3services ~/.config/i3/config.d/scripts/i3services
+# simpe notifications sounds script
+set $i3sounds ~/.config/i3/config.d/scripts/i3sounds
 # Scripts to open new windows in i3wm using alternating layouts (splith/splitv) for each new window. : https://github.com/olemartinorg/i3-alternating-layout
 set $i3-alt-layout ~/.config/i3/config.d/scripts/i3_alternating_layout.py
 # adds blur on wallpaper when a window is visible: https://github.com/rstacruz/feh-blur-wallpaper
 set $feh-blur ~/.config/i3/config.d/scripts/feh-blur
+# simple script to check for updates
+set $check-updates ~/.config/i3/config.d/scripts/check-updates
+
 
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod4
@@ -75,39 +74,130 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
+# test
+#bindsym $mod+Shift+a exec "kill $(pgrep -au $USER "bash" | grep "bash /usr/bin/clipmenud" | awk '{print$1}')"
+
 #### Sound Section ####
 # Opens alsamixer
 bindsym $mod+Shift+m exec i3-sensible-terminal -class termfloat -e alsamixer
 
 # Change volume
-bindsym XF86AudioRaiseVolume exec "amixer -q set Master 5%+; notify-send -t 750 'Volume Up' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }')"
-bindsym XF86AudioLowerVolume exec "amixer -q set Master 5%-; notify-send -t 750 'Volume Down' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }')"
-bindsym XF86AudioMute exec "amixer set Master toggle; notify-send -t 750 'Volume Toggle' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $4 }')"
+bindsym XF86AudioRaiseVolume exec --no-startup-id \
+          "amixer -q set Master 5%+; \
+          $i3sounds volume; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:audio \
+            -t 750 \
+            -h int:value:$(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }') \
+            'Volume Up'"
+bindsym XF86AudioLowerVolume exec --no-startup-id \
+          "amixer -q set Master 5%-; \
+          $i3sounds volume; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:audio \
+            -t 750 \
+            -h int:value:$(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $2 }') \
+            'Volume Down'"
+
+# Toggle volume
+bindsym XF86AudioMute exec --no-startup-id \
+          "amixer set Master toggle; \
+          $i3sounds volume; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:audio \
+            -t 750 \
+            'Volume Toggle. Sound?' $(amixer sget Master | grep 'Right:' | awk -F'[][]' '{ print $4 }')"
 
 # Toogle mic
-bindsym XF86AudioMicMute exec --no-startup-id "pactl set-source-mute 1 toggle; notify-send -t 750 'Volume' 'Mic Toogle' "
+bindsym XF86AudioMicMute exec --no-startup-id \
+          "pactl set-source-mute 1 toggle; \
+          $i3sounds volume; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:audio \
+            -t 750 \
+            'Mic Toogle. Mute?' $(pactl get-source-mute 1 | cut -c 7- )"
+            # $(pactl get-source-mute 1)"
 
 # Change track with playerctl
-bindsym XF86AudioNext exec --no-startup-id "playerctl next; notify-send -t 750 'Media Player' 'Next Song'"
-bindsym XF86AudioPause exec --no-startup-id "playerctl pause; notify-send -t 750 'Media Player' 'Pause'"
-bindsym XF86AudioPlay exec --no-startup-id "playerctl play-pause; notify-send -t 750 'Media Player' 'Toggle Play/Pay'"
-bindsym XF86AudioPrev exec --no-startup-id "playerctl previous; notify-send -t 750 'Media Player' 'Previous Song'"
+bindsym XF86AudioNext exec --no-startup-id \
+          "playerctl next; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:audio \
+            -t 750 'Media Player' 'Next Song'"
+bindsym XF86AudioPause exec --no-startup-id \
+          "playerctl pause; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:audio \
+            -t 750 \
+            'Media Player' 'Pause'"
+bindsym XF86AudioPlay exec --no-startup-id \
+          "playerctl play-pause; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:audio \
+            -t 750 \
+            'Media Player' 'Toggle Play/Pay'"
+bindsym XF86AudioPrev exec --no-startup-id \
+          "playerctl previous; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:audio \
+            -t 750 \
+            'Media Player' 'Previous Song'"
 
 # Change track with other keys
 #PageUp
-bindsym $mod+Prior exec --no-startup-id "playerctl next; notify-send -t 750 'Media Player' 'Next Song'"
+bindsym $mod+Prior exec --no-startup-id \
+          "playerctl next; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:audio \
+            -t 750 \
+            'Media Player' 'Next Song'"
 #PageDown
-bindsym $mod+Next exec --no-startup-id "playerctl previous; notify-send -t 750 'Media Player' 'Previous Song'"
+bindsym $mod+Next exec --no-startup-id \
+          "playerctl previous; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:audio \
+            -t 750 \
+            'Media Player' 'Previous Song'"
 #End
-bindsym $mod+End exec --no-startup-id "playerctl play-pause; notify-send -t 750 'Media Player' 'Toggle Play/Pause'"
+bindsym $mod+End exec --no-startup-id \
+          "playerctl play-pause; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:audio \
+            -t 750 \
+            'Media Player' 'Toggle Play/Pause'"
 
 #### Screen Section ####
 # Screen brightness controls
-bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send -t 750 'Brightness Up' $(xbacklight -get | cut -c -2)"
-bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send -t 750 'Brightness Down' $(xbacklight -get | cut -c -2)"
+bindsym XF86MonBrightnessUp exec --no-startup-id \
+          "xbacklight -inc 5; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:backlight \
+            -h int:value:$(xbacklight -get | cut -c -2) \
+            -t 750 \
+            'Brightness Up'"
+bindsym XF86MonBrightnessDown exec --no-startup-id \
+          "xbacklight -dec 5; \
+          notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:backlight \
+            -h int:value:$(xbacklight -get | cut -c -2) \
+            -t 750 \
+            'Brightness Down'"
 
-# Lock screen
-bindsym F12 exec --no-startup-id i3lock -f -u -i $lockpaper
+# Lock screen and suspend system
+bindsym F12 exec --no-startup-id "$i3sounds power-unplug & i3lock -f -i $lockpaper ; $i3exit suspend"
 
 # Monitor settings
 bindsym $mod+p exec --no-startup-id arandr
@@ -115,55 +205,95 @@ bindsym $mod+p exec --no-startup-id arandr
 # Printscreen
 bindsym Print exec scrot
 
+# reload picom, sometimes after suspend it stop working, this will kill the process and start it over again
+bindsym $mod+F10 exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -u 'critical' \
+            -t 2000 \
+            'Compositor' 'Reloading picom'; \
+          killall picom ; sleep 2 ; picom -b ; notify-send \
+            -c 'history-ignore' \
+            -t 2000 \
+            'Compositor' 'Reloading picom complete.' & $i3sounds complete"
+
+# notification daemon - dunst shortcuts
+# Close notification.
+bindsym Ctrl+space exec --no-startup-id dunstctl close
+
+# Close all notifications.
+bindsym Ctrl+Shift+space exec --no-startup-id dunstctl close-all
+
+# Redisplay last message(s).
+bindsym Ctrl+period exec --no-startup-id dunstctl history-pop
+
+# Context menu.
+bindsym Ctrl+Shift+period exec --no-startup-id dunstctl context
+
 #### Applications Section ####
 # Start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
 # Start a terminal on center and floating with minimal size
-bindsym $mod+Shift+Return exec --no-startup-id i3-sensible-terminal -class termfloat-oneliner
+bindsym $mod+Shift+Return exec --no-startup-id i3-sensible-terminal -name termfloat-oneliner
 
 # Program launcher
-bindsym $mod+d exec --no-startup-id "dmenu_run -nf '$base04' -nb '$base00' -sb '$base04' -sf '$base00' -fn 'Fantasque Sans Mono-13' -p '>'"
-bindsym XF86Search exec --no-startup-id "dmenu_run -nf '$base04' -nb '$base00' -sb '$base04' -sf '$base00' -fn 'Fantasque Sans Mono-13' -p '>'"
+bindsym $mod+d exec --no-startup-id "dmenu_run -nf '$base05' -nb '$base00' -sb '$base05' -sf '$base00' -fn 'Fantasque Sans Mono-13' -p '>'"
+bindsym XF86Search exec --no-startup-id "dmenu_run -nf '$base05' -nb '$base00' -sb '$base05' -sf '$base00' -fn 'Fantasque Sans Mono-13' -p '>'"
 
 # rofi, if installed uncomment
 #bindsym $mod+d exec --no-startup-id rofi -show
 #bindsym XF86Search exec --no-startup-id rofi -show
 
 #gmrun
-bindsym $mod+Shift+d exec --no-startup-id gmrun
+bindsym $mod+Ctrl+d exec --no-startup-id gmrun
+
+#jgmenu
+bindsym $mod+Shift+d exec --no-startup-id jgmenu_run
+#bindsym $mod+button2 --whole-window exec --no-startup-id jgmenu_run
 
 # Most used
 bindsym $mod+F1 exec $file_manager
 bindsym $mod+F2 exec $browser
-bindsym $mod+F3 exec $media_player
-bindsym $mod+F4 exec $chat
 
 # System related
-bindsym $mod+Insert exec --no-startup-id i3-sensible-terminal -class termfloat -hold -e neofetch
+bindsym $mod+Insert exec --no-startup-id i3-sensible-terminal -name termfloat -hold -e neofetch
 bindsym $mod+Delete exec i3-sensible-terminal -e htop
 bindsym $mod+F5 exec i3-sensible-terminal -e pkexec dmesg -wH
+# check for updates
+bindsym $mod+Shift+u exec --no-startup-id \
+          "$check-updates \
+          && $i3sounds complete || $i3sounds default"
+# emoji picker
+bindsym $mod+Ctrl+space exec --no-startup-id sh ~/.config/i3/config.d/scripts/emojipick
+# clipboard manager
+#bindsym $mod+c exec --no-startup-id "clipmenu -nf '$base05' -nb '$base00' -sb '$base05' -sf '$base00' -fn 'Fantasque Sans Mono-13' -p '>'"
+bindsym $mod+c exec --no-startup-id gpaste-client ui
 
 # Network related
-bindsym $mod+F9 exec i3-sensible-terminal -e pkexec nethogs
-bindsym $mod+Shift+w exec --no-startup-id i3-sensible-terminal -class termfloat -e nmtui
+bindsym $mod+F9 exec "$i3sounds question & i3-sensible-terminal -e pkexec nethogs"
+bindsym $mod+Shift+w exec --no-startup-id i3-sensible-terminal -name termfloat -e nmtui
 
 # Autostart applications
 exec --no-startup-id xrdb ~/.Xresources
+exec --no-startup-id $i3sounds power-plug
+#exec --no-startup-id "$check-updates && $i3sounds complete || $i3sounds default"
+exec --no-startup-id $i3sounds power-plug
 exec --no-startup-id volumeicon
-exec --no-startup-id dunst
 exec --no-startup-id feh --bg-scale $wallpaper
+exec --no-startup-id dunst \
+                      -lf "$base03" -nf "$base05" -cf "$base05" \
+                      -lb "$base00" -nb "$base00" -cb "$base08"
 exec --no-startup-id picom -b
-exec --no-startup-id clipit
+exec --no-startup-id gpaste-client daemon
 exec --no-startup-id udiskie --no-automount --tray
 exec --no-startup-id unclutter
 exec --no-startup-id xinput --set-prop "Synaptics TM3053-004" "libinput Tapping Enabled" 1
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec --no-startup-id nm-applet
 # cute dog, dont kill it :(
-# exec --no-startup-id oneko -dog
-
+#exec --no-startup-id oneko -dog
 exec --no-startup-id jgmenu --at-pointer --hide-on-startup
-
 #exec --no-startup-id $i3-alt-layout
 #exec --no-startup-id $feh-blur --blur 4 --darken 0 -d
 
@@ -183,8 +313,8 @@ for_window [workspace=$ws22] layout tabbed
 #bindsym F1 [instance="xterm"] scratchpad show
 
 # Open specific applications in floating mode
-for_window [class="termfloat"] floating enable, resize set 1000 500, move absolute position center
-for_window [class="termfloat-oneliner"] floating enable, resize set 1024 96, move absolute position center
+for_window [instance="termfloat"] floating enable, resize set 1000 500, move position center
+for_window [instance="termfloat-oneliner"] floating enable, resize set 1024 96, move position center
 for_window [title="alsamixer"] floating enable, border pixel 1
 for_window [class="Clipgrab"] floating enable
 for_window [title="File Transfer*"] floating enable
@@ -205,11 +335,11 @@ for_window [class="Steam"] floating enable, sticky enable, border none
 for_window [title="Picture-in-Picture"] floating enable, sticky enable, border none, resize set 320 240, move absolute position 1592 832
 for_window [class="plasma.emojier"] floating enable, sticky enable, border none move absolute position center
 for_window [title="Screen Layout Editor"] floating enable, resize set 800 600, move absolute position center
+for_window [class="love"] floating enable
 
 # Plasma compatibility improvements when using kde with i3
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
-
 for_window [class="yakuake"] floating enable
 for_window [class="systemsettings"] floating disable
 for_window [class="plasmashell"] floating enable;
@@ -230,13 +360,13 @@ for_window [title="Desktop — Plasma"] kill; floating enable; border none
 bindsym $mod+0 mode "$mode_system"
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 mode "$mode_system" {
-  bindsym l exec --no-startup-id i3lock -u -i $lockpaper #i3exit lock, mode "default"
-  bindsym s exec --no-startup-id $i3exit suspend, mode "default"
-  bindsym u exec --no-startup-id $i3exit switch_user, mode "default"
-  bindsym e exec --no-startup-id i3-msg exit, mode "default"
-  bindsym h exec --no-startup-id $i3exit hibernate, mode "default"
-  bindsym r exec --no-startup-id $i3exit reboot, mode "default"
-  bindsym Shift+s exec --no-startup-id $i3exit shutdown, mode "default"
+  bindsym l exec --no-startup-id i3lock -f -i $lockpaper #i3exit lock, mode "default"
+  bindsym s exec --no-startup-id "$i3sounds power-unplug & $i3exit suspend", mode "default"
+  bindsym u exec --no-startup-id "$i3sounds power-unplug & $i3exit switch_user", mode "default"
+  bindsym e exec --no-startup-id "$i3sounds power-unplug & i3-msg exit", mode "default"
+  bindsym h exec --no-startup-id "$i3sounds power-unplug & $i3exit hibernate", mode "default"
+  bindsym r exec --no-startup-id "$i3sounds power-unplug & $i3exit reboot", mode "default"
+  bindsym Shift+s exec --no-startup-id "$i3sounds power-unplug & $i3exit shutdown", mode "default"
 
   # exit system mode: "Enter" or "Escape"
   bindsym Return mode "default"
@@ -244,12 +374,11 @@ mode "$mode_system" {
 }
 
 ### i3cpu-governor menu
-# Show current cpu governor
-bindsym $mod+Ctrl+c exec notify-send -t 750 "CPU Governor $(echo && cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor)"
 # Set the cpu governor
-bindsym $mod+c mode "$mode_cpu"
-set $mode_cpu (1)performance (2)powersave (3)userspace (4)ondemand (5)conservative (6)schedutil
+bindsym $mod+Ctrl+c mode "$mode_cpu"
+set $mode_cpu (0)check (1)performance (2)powersave (3)userspace (4)ondemand (5)conservative (6)schedutil
 mode "$mode_cpu" {
+  bindsym 0 exec notify-send -t 750 "CPU Governor $(echo && cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor)" && :, mode "default"
   bindsym 1 exec --no-startup-id pkexec $i3cpu-governor performance && :, mode "default"
   bindsym 2 exec --no-startup-id pkexec $i3cpu-governor powersave && :, mode "default"
   bindsym 3 exec --no-startup-id pkexec $i3cpu-governor userspace && :, mode "default"
@@ -315,17 +444,52 @@ bindsym --whole-window $mod+button4 workspace next_on_output
 bindsym --whole-window $mod+button5 workspace prev_on_output
 
 # split orientation
-bindsym $mod+h split h; exec notify-send -t 750 'i3wm' 'Tile Horizontally'
-bindsym $mod+v split v; exec notify-send -t 750 'i3wm' 'Tile Vertically'
-bindsym $mod+q split toggle; exec notify-send -t 750 'i3wm' 'Toggle Split Orientation'
+bindsym $mod+h split h; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Tile Horizontally'"
+bindsym $mod+v split v; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Tile Vertically'"
+bindsym $mod+q split toggle; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Toggle Split Orientation'"
 
 # toggle fullscreen mode for the focused container
-bindsym $mod+f fullscreen toggle; exec notify-send -t 750 'i3wm' 'Toggle Fullscreen'
+bindsym $mod+f fullscreen toggle; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Toggle Fullscreen'"
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking; exec notify-send -t 750 'i3wm' 'Container Layout: Stacking'
-bindsym $mod+w layout tabbed; exec notify-send -t 750 'i3wm' 'Container Layout: Tabbed'
-bindsym $mod+e layout toggle split; exec notify-send -t 750 'i3wm' 'Container Layout: Split'
+bindsym $mod+s layout stacking; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Container Layout: Stacking'"
+bindsym $mod+w layout tabbed; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Container Layout: Tabbed'"
+bindsym $mod+e layout toggle split; exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -h string:x-dunst-stack-tag:i3wm \
+            -t 750 \
+            'i3wm' 'Container Layout: Split'"
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
@@ -502,6 +666,7 @@ bar {
   bindsym button3 exec --no-startup-id jgmenu_run
   status_command $i3bar
   position top
+  tray_output primary
     colors {
         background $base00
         separator  $base01
