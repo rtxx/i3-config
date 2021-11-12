@@ -1,6 +1,7 @@
 #!/bin/bash
 #   Get's AUR pkgs.
 #   More info at https://wiki.archlinux.org/title/Aurweb_RPC_interface
+# Disclaimer: There is alot of *badness* in this script, I made it for fun and to learn and to get used to bash.
 
 progname=$(basename $0)
 # max results to show on search
@@ -23,7 +24,7 @@ cat << EOF
      -e, --exact        search for exact package
      -f, --searchfield  search with specific field. avaiable fields: "name" "name-desc" "maintainer" "depends" "makedepends" "optdepends" "checkdepends"
      -D, --download     download package
-     -x, --extract      extract package when download is finished
+     -x, --extract and compiles     extract package when download is finished and compiles it with makepkg -s
 
 EOF
 }
@@ -58,8 +59,6 @@ for pkg in ${dependencies[@]}; do
     exit 2
   fi
 done
-
-
 
 pkgString=""
 #loops the argument string until is done
@@ -112,24 +111,29 @@ if [ "$searchPkg" ]; then
     echo ${BOLD}:: -x, --extract does nothing with -S, --search flag, ignoring...${RESTORE}
   fi
   # start search
-  # if exact search flag on
+  # if exact search flag on section
   if [[ "$exactSearch" ]] ; then
     echo ${BOLD}:: Search AUR for $pkgString ${RESTORE}
     if [ "$searchField" ]; then
       echo ${BOLD}:: -f, --searchfield flag does nothing with -e, --exact, ignoring...${RESTORE}
     fi
-    resultJSON=$(curl -s "https://aur.archlinux.org/rpc/?v=5&type=info&arg[]=$pkgString")
+    donwloadJSON=$(curl -s "https://aur.archlinux.org/rpc/?v=5&type=info&arg[]=$pkgString" -o /tmp/pkgList)
+    resultJSON=$(cat /tmp/pkgList)
     nResult=$(echo $resultJSON | jq -r '.resultcount')
+    # if it founds more than 1 pkg, errors, if not, outputs the pkg data
     if [[ "$nResult" -eq 0 ]]; then
       echo ${BOLD}:: Exact search return 0 results. Try $progname -S $pkgString ${RESTORE}
       exit 2
     else
-      echo $resultJSON | jq -r '.results[] | "ID:\t\t\(.ID) \nName:\t\t\(.Name) \nPackageBaseID:\t\(.PackageBaseID) \nPackageBase:\t\(.PackageBase) \nVersion:\t\(.Version) \nDescription:\t\(.Description) \nURL:\t\t\(.URL) \nNumVotes:\t\(.NumVotes) \nPopularity:\t\(.Popularity) \nOutOfDate:\t\(.OutOfDate) \nMaintainer:\t\(.Maintainer) \nFirstSubmitted:\t\(.FirstSubmitted) \nLastModified:\t\(.LastModified) \nURLPath:\t\(.URLPath) \nDepends:\t\(.Depends) \nMakeDepends:\t\(.MakeDepends) \nOptDepends:\t\(.OptDepends) \nLicense:\t\(.License) \nKeywords:\t\(.Keywords) "'
+      firstSubmitted=$(date -d @$(echo $resultJSON | jq -jr '.results[] | "\(.FirstSubmitted)"'))
+      lastModified=$(date -d @$(echo $resultJSON | jq -jr '.results[] | "\(.LastModified)"'))
+      echo $resultJSON | jq -r '.results[] | "'${BOLD}'ID:'${RESTORE}'\t\t\(.ID) \n'${BOLD}'Name:'${RESTORE}'\t\t\(.Name) \n'${BOLD}'PackageBaseID:'${RESTORE}'\t\(.PackageBaseID) \n'${BOLD}'PackageBase:'${RESTORE}'\t\(.PackageBase) \n'${BOLD}'Version:'${RESTORE}'\t\(.Version) \n'${BOLD}'Description:'${RESTORE}'\t\(.Description) \n'${BOLD}'URL:'${RESTORE}'\t\t\(.URL) \n'${BOLD}'NumVotes:'${RESTORE}'\t\(.NumVotes) \n'${BOLD}'Popularity:'${RESTORE}'\t\(.Popularity) \n'${BOLD}'OutOfDate:'${RESTORE}'\t\(.OutOfDate) \n'${BOLD}'Maintainer:'${RESTORE}'\t\(.Maintainer) \n'${BOLD}'FirstSubmitted:'${RESTORE}'\t'"$firstSubmitted"' \n'${BOLD}'LastModified:'${RESTORE}'\t'"$lastModified"' \n'${BOLD}'URLPath:'${RESTORE}'\t\(.URLPath) \n'${BOLD}'Depends:'${RESTORE}'\t\(.Depends) \n'${BOLD}'MakeDepends:'${RESTORE}'\t\(.MakeDepends) \n'${BOLD}'OptDepends:'${RESTORE}'\t\(.OptDepends) \n'${BOLD}'License:'${RESTORE}'\t\(.License) \n'${BOLD}'Keywords:'${RESTORE}'\t\(.Keywords) "' | sed 's/^/   /'
       exit 0
     fi
   fi
 
   # if searchField flag is on
+  # checks if -f flag argument is valid, if not errors out
   if [ "$searchField" ]; then
     searchFieldOptions=("name" "name-desc" "maintainer" "depends" "makedepends" "optdepends" "checkdepends")
     for field in ${searchFieldOptions[@]}; do
@@ -137,16 +141,31 @@ if [ "$searchPkg" ]; then
         foundField=1
       fi
     done
+    # if found search flag is on section
     if [ "$foundField" ]; then
       echo ${BOLD}:: Search AUR for $pkgString with field "'$searchField'"${RESTORE}
-      resultJSON=$(curl -s "https://aur.archlinux.org/rpc/?v=5&type=search&by=$searchField&arg=$pkgString")
+      donwloadJSON=$(curl -s "https://aur.archlinux.org/rpc/?v=5&type=search&by=$searchField&arg=$pkgString" -o /tmp/pkgList)
+      resultJSON=$(cat /tmp/pkgList)
       nResult=$(echo $resultJSON | jq -r '.resultcount')
+      # if it founds more than the maxResults variable, then it only outputs until the value
       if [[ "$nResult" -gt $maxResults ]]; then
-        echo ${BOLD}:: Please be more specific, $nResult packages found. Max result is set to $maxResults. Use -r, --maxresults to change it. ${RESTORE}
-        exit 2
+        echo ${BOLD}:: Please be more specific, $nResult packages found. Max result is set to $maxResults. Use -r, --maxresults to change it or -f, --searchfield to narrow it more. ${RESTORE}
+        printf "${BOLD}%-4s %-32s %-128s${RESTORE}\n" "[#]" "Package Name" "Description" | sed 's/^/   /'
+        for ((i = 0 ; i < $maxResults ; i++)); do
+          name=$(echo $resultJSON | jq -jr '.results['$i'] | "\(.Name)"')
+          description=$(echo $resultJSON | jq -jr '.results['$i'] | "\(.Description)"')
+          printf "%-4s ${BOLD}%-32s${RESTORE} %-128s\n" "[$i]" "$name" "$description" | sed 's/^/   /'
+        done
+        exit 0
       fi
+      # if its under the maxResults value then it prints the result pkgs one line at a time
       echo ${BOLD}:: Found $nResult packages. ${RESTORE}
-      echo $resultJSON | jq -r '.results[] | "Name:\t\t\(.Name) \nDescription:\t\(.Description)\n"'
+      printf "${BOLD}%-4s %-32s %-128s${RESTORE}\n" "[#]" "Package Name" "Description" | sed 's/^/   /'
+      for ((i = 0 ; i < $nResult ; i++)); do
+        name=$(echo $resultJSON | jq -jr '.results['$i'] | "\(.Name)"')
+        description=$(echo $resultJSON | jq -jr '.results['$i'] | "\(.Description)"')
+        printf "%-4s ${BOLD}%-32s${RESTORE} %-128s\n" "[$i]" "$name" "$description" | sed 's/^/   /'
+      done
       exit 0
     else
       echo ${BOLD}:: Search field "'$searchField'" is not valid. Valid options: ${RESTORE}
@@ -156,22 +175,36 @@ if [ "$searchPkg" ]; then
   fi
 
   # normal search
+  # normal search is without any flags, simply search the AUR for the pkg
+  # if results more than maxResults then errors out, outputing the lines until its value
   echo ${BOLD}:: Search AUR for $pkgString${RESTORE}
-  resultJSON=$(curl -s "https://aur.archlinux.org/rpc/?v=5&type=search&arg=$pkgString")
+  donwloadJSON=$(curl -s "https://aur.archlinux.org/rpc/?v=5&type=search&arg=$pkgString" -o /tmp/pkgList)
+  resultJSON=$(cat /tmp/pkgList)
   nResult=$(echo $resultJSON | jq -r '.resultcount')
   if [[ "$nResult" -gt $maxResults ]]; then
-    echo ${BOLD}:: Please be more specific, $nResult packages found. Max result is set to $maxResults. Use -r, --maxresults to change it. ${RESTORE}
-    exit 2
+    echo ${BOLD}:: Please be more specific, $nResult packages found. Max result is set to $maxResults. Use -r, --maxresults to change it or -f, --searchfield to narrow it more.${RESTORE}
+    printf "${BOLD}%-4s %-32s %-128s${RESTORE}\n" "[#]" "Package Name" "Description" | sed 's/^/   /'
+    for ((i = 0 ; i < $maxResults ; i++)); do
+      name=$(echo $resultJSON | jq -jr '.results['$i'] | "\(.Name)"')
+      description=$(echo $resultJSON | jq -jr '.results['$i'] | "\(.Description)"')
+      printf "%-4s ${BOLD}%-32s${RESTORE} %-128s\n" "[$i]" "$name" "$description" | sed 's/^/   /'
+    done
+    exit 0
   else
     echo ${BOLD}:: Found $nResult packages. ${RESTORE}
-    echo $resultJSON | jq -r '.results[] | "Name:\t\t\(.Name) \nDescription:\t\(.Description)\n"'
+    printf "${BOLD}%-4s %-32s %-128s${RESTORE}\n" "[#]" "Package Name" "Description" | sed 's/^/   /'
+    for ((i = 0 ; i < $nResult ; i++)); do
+      name=$(echo $resultJSON | jq -jr '.results['$i'] | "\(.Name)"')
+      description=$(echo $resultJSON | jq -jr '.results['$i'] | "\(.Description)"')
+      printf "%-4s ${BOLD}%-32s${RESTORE} %-128s\n" "[$i]" "$name" "$description" | sed 's/^/   /'
+    done
     exit 0
   fi
 fi
 
 # download package
 # downloads the package, creates a folder with the pkg version
-# if -x is on, extracts to it
+# if -x is on, extracts to it and compiles with makepkg
 if [ "$downloadPkg" ]; then
   if [[ "$exactSearch" ]] ; then
     echo ${BOLD}:: -e, --exact does nothing with -D, --download flag, ignoring...${RESTORE}
@@ -183,7 +216,20 @@ if [ "$downloadPkg" ]; then
   nResult=$(echo $resultJSON | jq -r '.resultcount')
   if [[ "$nResult" -eq 1 ]]; then
     echo ${BOLD}:: Found $pkgString, downloading...${RESTORE}
-    echo $resultJSON | jq -r '.results[] | "ID:\t\t\(.ID) \nName:\t\t\(.Name) \nPackageBaseID:\t\(.PackageBaseID) \nPackageBase:\t\(.PackageBase) \nVersion:\t\(.Version) \nDescription:\t\(.Description) \nURL:\t\t\(.URL) \nNumVotes:\t\(.NumVotes) \nPopularity:\t\(.Popularity) \nOutOfDate:\t\(.OutOfDate) \nMaintainer:\t\(.Maintainer) \nFirstSubmitted:\t\(.FirstSubmitted) \nLastModified:\t\(.LastModified) \nURLPath:\t\(.URLPath) \nDepends:\t\(.Depends) \nMakeDepends:\t\(.MakeDepends) \nOptDepends:\t\(.OptDepends) \nLicense:\t\(.License) \nKeywords:\t\(.Keywords) "'
+    firstSubmitted=$(date -d @$(echo $resultJSON | jq -jr '.results[] | "\(.FirstSubmitted)"'))
+    lastModified=$(date -d @$(echo $resultJSON | jq -jr '.results[] | "\(.LastModified)"'))
+    echo $resultJSON | jq -r '.results[] | "'${BOLD}'ID:'${RESTORE}'\t\t\(.ID) \n'${BOLD}'Name:'${RESTORE}'\t\t\(.Name) \n'${BOLD}'PackageBaseID:'${RESTORE}'\t\(.PackageBaseID) \n'${BOLD}'PackageBase:'${RESTORE}'\t\(.PackageBase) \n'${BOLD}'Version:'${RESTORE}'\t\(.Version) \n'${BOLD}'Description:'${RESTORE}'\t\(.Description) \n'${BOLD}'URL:'${RESTORE}'\t\t\(.URL) \n'${BOLD}'NumVotes:'${RESTORE}'\t\(.NumVotes) \n'${BOLD}'Popularity:'${RESTORE}'\t\(.Popularity) \n'${BOLD}'OutOfDate:'${RESTORE}'\t\(.OutOfDate) \n'${BOLD}'Maintainer:'${RESTORE}'\t\(.Maintainer) \n'${BOLD}'FirstSubmitted:'${RESTORE}'\t'"$firstSubmitted"' \n'${BOLD}'LastModified:'${RESTORE}'\t'"$lastModified"' \n'${BOLD}'URLPath:'${RESTORE}'\t\(.URLPath) \n'${BOLD}'Depends:'${RESTORE}'\t\(.Depends) \n'${BOLD}'MakeDepends:'${RESTORE}'\t\(.MakeDepends) \n'${BOLD}'OptDepends:'${RESTORE}'\t\(.OptDepends) \n'${BOLD}'License:'${RESTORE}'\t\(.License) \n'${BOLD}'Keywords:'${RESTORE}'\t\(.Keywords) "' | sed 's/^/   /'
+
+    echo ${BOLD}:: Checking for make dependencies...${RESTORE}
+    makeDepends=$(echo $resultJSON | jq -jr '.results[] | "\(.MakeDepends[]) "')
+    checkInstalledPkgs=$(pacman -Q $makeDepends)
+    checkInstalledPkgsExitStatus=$?
+    if [ "$checkInstalledPkgsExitStatus" -eq 0 ]; then
+      echo ${BOLD}:: All make dependencies are present${RESTORE}
+    else
+      echo ${BOLD}:: Warning! ${RESTORE}${RED}Some dependencies needed for compiling are missing ...${RESTORE}
+    fi
+
     urlPath=$(echo $resultJSON | jq -r  .results[0].URLPath)
     curlURL=$(curl "https://aur.archlinux.org$urlPath" -o "$pkgString.tar.gz")
     curlURLExitStatus=$?
@@ -194,15 +240,33 @@ if [ "$downloadPkg" ]; then
       echo ${BOLD}:: Downloaded $pkgString to $downloadLocation/$pkgString/$pkgVersion ${RESTORE}
       if [ "$extractPkg" ]; then
         pkgLocation=$downloadLocation/$pkgString/$pkgVersion/$pkgString.tar.gz
-        tar -xvf $pkgLocation -C $pkgString/$pkgVersion --strip-components=1
+        echo ${BOLD}:: Extracting $pkgString to $downloadLocation/$pkgString/$pkgVersion ${RESTORE}
+        tar -xvf $pkgLocation -C $pkgString/$pkgVersion --strip-components=1 | sed 's/^/   /'
         echo ${BOLD}:: Extracted $pkgString to $downloadLocation/$pkgString/$pkgVersion ${RESTORE}
-        exit 0
+        echo ${BOLD}:: Started compiling with makepkg ${RESTORE}
+        cd $downloadLocation/$pkgString/$pkgVersion
+        # need some work here, to get the makepkg error but still output its progress
+        makepkg -s
+        #makePkg=$(makepkg -s)
+        #makePkgExitStatus=$?
+        #if [ "$curlURLExitStatus" -eq 0 ]; then
+          compilePkg=$(ls $downloadLocation/$pkgString/$pkgVersion/*.pkg.tar.zst)
+          echo
+          echo ${BOLD}:: makepkg complete.${RESTORE}
+          echo ${BOLD}:: If successful, Use [ pacman -U $compilePkg ] to install $pkgString${RESTORE}
+          #exit 0
+        #else
+          #echo ${BOLD}:: makepkg complete but with errors! ${RESTORE}
+          #echo ${BOLD}:: Check for errors above ${RESTORE}
+          exit 0
+        #fi
       fi
       exit 0
     else
       echo ${BOLD}:: Something went wrong ...${RESTORE}
       exit 2
     fi
-
+  else
+  echo ${BOLD}:: Please be more specific, $nResult packages found. ${RESTORE}
   fi
 fi
