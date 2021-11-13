@@ -2,6 +2,10 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 # Based on Manjaro i3 config file
 
+### Includes ###
+# theme
+#include ~/.config/i3/config.d/theme.conf
+
 #### General Settings ####
 # default file manager
 set $file_manager thunar

@@ -50,7 +50,7 @@ alias pls-edit-env='sudo nano /etc/environment'
 # i3
 # edit config file
 alias i3-edit-config='nano ~/.config/i3/config.d/config-main'
-alias i3-edit-config-gui='xdg-open ~/.config/i3/config.d/config-main'
+alias i3-edit-config-gui='xdg-open ~/.config/i3/config.d/config-main & disown'
 # remake config and reload
 alias i3-remake-config='bash ~/.config/i3/makeconfig; i3-msg restart'
 # reload wallpaper
@@ -61,9 +61,16 @@ alias i3-wallpaper-set='feh --bg-scale'
 # i3status
 # edit config file
 alias i3status-edit-config='nano ~/.config/i3status/config.d/config-main'
-alias i3status-edit-config-gui='xdg-open ~/.config/i3status/config.d/config-main'
+alias i3status-edit-config-gui='xdg-open ~/.config/i3status/config.d/config-main & disown'
 # remake config and reload
 alias i3status-remake-config='bash ~/.config/i3status/makeconfig; i3-msg restart'
 
 # simple script with helpful pacman commands
 alias help-pacman='bash ~/.config/i3/config.d/scripts/help-pacman'
+
+
+# simple aur helper
+alias packy='bash .config/i3/config.d/scripts/packy'
+
+# check news from arch
+alias archnews='bash ~/.config/i3/config.d/scripts/archnews'
