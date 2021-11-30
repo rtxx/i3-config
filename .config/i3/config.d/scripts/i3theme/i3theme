@@ -1,0 +1,337 @@
+#!/bin/bash
+#MIT License
+#Copyright (c) [2021] [Rui Teixeira (rtxx)]
+#Permission is hereby granted, free of charge, to any person obtaining a copy
+#of this software and associated documentation files (the "Software"), to deal
+#in the Software without restriction, including without limitation the rights
+#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#copies of the Software, and to permit persons to whom the Software is
+#furnished to do so, subject to the following conditions:
+
+#The above copyright notice and this permission notice shall be included in all
+#copies or substantial portions of the Software.
+
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#SOFTWARE.
+
+scriptName=$(basename $0)
+#https://stackoverflow.com/a/246128
+scriptDir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+themesDir=$scriptDir/themes
+
+xsettingsdConfigFile=~/.xsettingsd
+gtk3ConfigFile=~/.config/gtk-3.0/settings.ini
+gtk2ConfigFile=~/.gtkrc-2.0
+# i3 dirs
+iThreeDir=~/.config/i3
+iThreeRemakeScript=~/.config/i3/makeconfig
+# i3status dirs
+iThreeStatusDir=~/.config/i3status
+iThreeStatusRemakeScript=~/.config/i3status/makeconfig
+
+function printHelp {
+cat << EOF
+
+Change i3 theme.
+
+Usage: $scriptName -options [theme]
+
+options
+  -l, --list    list all avaiable themes
+  -t, --theme   change current theme
+  -g, --gtk     change only GTK theme
+  -i, --i3      change only i3 and i3status theme (xresources and dunst too)
+
+EOF
+}
+
+# color support, thanks https://gist.github.com/elucify/c7ccfee9f13b42f11f81
+RESTORE=$(echo -en '\033[0m')
+RED=$(echo -en '\033[00;31m')
+GREEN=$(echo -en '\033[00;32m')
+YELLOW=$(echo -en '\033[00;33m')
+BLUE=$(echo -en '\033[00;34m')
+MAGENTA=$(echo -en '\033[00;35m')
+PURPLE=$(echo -en '\033[00;35m')
+CYAN=$(echo -en '\033[00;36m')
+LIGHTGRAY=$(echo -en '\033[00;37m')
+LRED=$(echo -en '\033[01;31m')
+LGREEN=$(echo -en '\033[01;32m')
+LYELLOW=$(echo -en '\033[01;33m')
+LBLUE=$(echo -en '\033[01;34m')
+LMAGENTA=$(echo -en '\033[01;35m')
+LPURPLE=$(echo -en '\033[01;35m')
+LCYAN=$(echo -en '\033[01;36m')
+WHITE=$(echo -en '\033[01;37m')
+BOLD=$(echo -en '\033[1m')
+UNDERLINE=$(echo -en '\033[4')
+
+# check if dependencies are met
+dependencies=("xsettingsd" "jq" "feh")
+for pkg in ${dependencies[@]}; do
+  checkDependency=$(pacman -Q $pkg)
+  exitStatus=$?
+  if [ "$exitStatus" -eq 1 ]; then
+    echo ${BOLD}:: Error ! Please install $pkg ${RESTORE}
+    exit 2
+  fi
+done
+
+# clean temporary files on exit
+#if [[ -e "" ]]; then
+#  trap "rm " EXIT
+#fi
+
+#loops the argument string until is done
+while [[ $# -gt 0 ]]; do
+  key="$1"
+  case "$key" in
+
+    -h|--help) printHelp=1 ;;
+    -l|--list) listThemesF=1 ;;
+    -t|--theme) shift; applyTheme="$1" ; applyThemeF=1 ;;
+    -g|--gtk) shift; changeGTKTheme="$1" ; changeGTKThemeF=1 ;;
+    -i|--i3) shift; changeIThree="$1" ; changeIThreeF=1 ;;
+
+    *) echo "${RED}::${RESTORE}${BOLD} Unknown option: '$key' (use -h for help)${RESTORE}" ; exit 2 ;;
+  esac
+  shift
+done
+
+if [ "$printHelp" ]; then
+  printHelp
+  exit 0
+fi
+
+# applies theme to all avaiable programs (i3, gtk, etc...)
+# reusing the other flags
+if [ "$applyThemeF" ]; then
+  changeGTKTheme="$applyTheme" ; changeGTKThemeF=1
+  changeIThree="$applyTheme" ; changeIThreeF=1
+fi
+
+
+
+# checks if JSON files is valid
+# empty files will NOT error out
+function verifyJSON() {
+  if jq empty "$1" 2>/dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# list all the themes avaiable
+if [ "$listThemesF" ]; then
+  echo "${GREEN}::${RESTORE}${BOLD} Themes avaiable: ${RESTORE}"
+  #checks for theme.config within themes folder
+  for currentThemeDir in $themesDir/*
+  do
+    # checks if theme.config file exist and verifies if its a valid JSON file
+    if [[ -e $currentThemeDir/theme.config ]]; then
+      if verifyJSON "$currentThemeDir/theme.config"; then
+        echo "${GREEN}-->${RESTORE} $(basename $currentThemeDir)" | sed 's/^/   /'
+      else
+        echo "${RED}->>${RESTORE} Invalid JSON: $(basename $currentThemeDir)" | sed 's/^/   /'
+      fi
+    fi
+  done
+  exit 0
+fi
+
+# change GTK theme
+if [ "$changeGTKThemeF" ]; then
+  echo "${GREEN}::${RESTORE}${BOLD} Changing GTK theme to '$changeGTKTheme' ${RESTORE}"
+
+  # check if theme exists
+  if [[ ! -d $themesDir/$changeGTKTheme ]]; then
+    echo "${RED}::${RESTORE}${BOLD} GTK theme '$changeGTKTheme' not found. Use $scriptName -l for a theme list  ${RESTORE}"
+    exit 2
+  fi
+
+  # checking if theme JSON is valid
+  if ! verifyJSON "$themesDir/$changeGTKTheme/theme.config"; then
+    echo "${RED}::${RESTORE}${BOLD} Invalid JSON: $changeGTKTheme ${RESTORE}"
+    exit 2
+  fi
+
+  #getting JSON file contents to var
+  themeJSON=$(cat $themesDir/$changeGTKTheme/theme.config)
+
+  # check if dependencies are met
+  themeDependencies=$( echo $themeJSON | jq -r '.["dependencies"][]' )
+  for pkg in ${themeDependencies[@]}; do
+    checkDependency=$(pacman -Q $pkg)
+    exitStatus=$?
+    if [ "$exitStatus" -eq 1 ]; then
+      echo ${RED}::${RESTORE}${BOLD} Missing dependencies: Please install $pkg ${RESTORE}
+      exit 2
+    fi
+  done
+
+  # GTK values from JSON
+  gtkThemeName=$( echo $themeJSON | jq -r '.gtk["gtk-theme-name"]' )
+  gtkIconName=$( echo $themeJSON | jq -r '.gtk["gtk-icon-theme-name"]' )
+  gtkFontName=$( echo $themeJSON | jq -r '.gtk["gtk-font-name"]' )
+  gtkCursorName=$( echo $themeJSON | jq -r '.gtk["gtk-cursor-theme-name"]' )
+  gtkCursorSize=$( echo $themeJSON | jq -r '.gtk["gtk-cursor-theme-size"]' )
+  wallpapperTheme=$( echo $themeJSON | jq -r '.["wallpaper"]' )
+
+  # if GTK theme exists
+  if [[ -d "/usr/share/themes/$gtkThemeName" ]]; then
+
+    # xsettingsd section
+    gtkThemeNameQ='"'$gtkThemeName'"' # added quotation marks
+    gtkIconNameQ='"'$gtkIconName'"' # added quotation marks
+    gtkCursorNameQ='"'$gtkCursorName'"' # added quotation marks
+    sed -i '/Net\/ThemeName/cNet\/ThemeName '$gtkThemeNameQ'' $xsettingsdConfigFile
+    sed -i '/Net\/IconThemeName/cNet\/IconThemeName '$gtkIconNameQ'' $xsettingsdConfigFile
+    sed -i '/Gtk\/CursorThemeName/cGtk\/CursorThemeName '$gtkCursorNameQ'' $xsettingsdConfigFile
+    echo "${GREEN}-->${RESTORE}${BOLD} $xsettingsdConfigFile changed ${RESTORE}" | sed 's/^/   /'
+
+    # gtk 2.0 section
+    sed -i '/gtk-theme-name/cgtk-theme-name='"$gtkThemeName"'' $gtk2ConfigFile
+    sed -i '/gtk-icon-theme-name/cgtk-icon-theme-name='"$gtkIconName"'' $gtk2ConfigFile
+    sed -i '/gtk-font-name/cgtk-font-name='"$gtkFontName"'' $gtk2ConfigFile
+    sed -i '/gtk-cursor-theme-name/cgtk-cursor-theme-name='"$gtkCursorName"'' $gtk2ConfigFile
+    sed -i '/gtk-cursor-theme-size/cgtk-cursor-theme-size='"$gtkCursorSize"'' $gtk2ConfigFile
+    echo "${GREEN}-->${RESTORE}${BOLD} $gtk2ConfigFile changed ${RESTORE}" | sed 's/^/   /'
+
+    # gtk 3.0 section
+    sed -i '/gtk-theme-name/cgtk-theme-name='"$gtkThemeName"'' $gtk3ConfigFile
+    sed -i '/gtk-icon-theme-name/cgtk-icon-theme-name='"$gtkIconName"'' $gtk3ConfigFile
+    sed -i '/gtk-font-name/cgtk-font-name='"$gtkFontName"'' $gtk3ConfigFile
+    sed -i '/gtk-cursor-theme-name/cgtk-cursor-theme-name='"$gtkCursorName"'' $gtk3ConfigFile
+    sed -i '/gtk-cursor-theme-size/cgtk-cursor-theme-size='"$gtkCursorSize"'' $gtk3ConfigFile
+    echo "${GREEN}-->${RESTORE}${BOLD} $gtk3ConfigFile changed ${RESTORE}" | sed 's/^/   /'
+
+    # on the fly theme change for GTK apps, reloading xsettingsd
+    killall -HUP xsettingsd
+    echo "${GREEN}-->${RESTORE}${BOLD} xsettingsd reloaded ${RESTORE}" | sed 's/^/   /'
+
+  else
+    echo "${RED}::${RESTORE}${BOLD} $gtkThemeName is missing from /usr/share/themes ${RESTORE}"
+  fi
+
+  # setting the wallpaper
+  if [[ "$wallpapperTheme" ]]; then
+    if [[ -e "$themesDir/$changeGTKTheme/$wallpapperTheme" ]]; then
+      # change i3 main.conf so next login the wallpaper and lockscreen are correct
+      sed -i '/set $wallpaper/cset $wallpaper "'"$themesDir/$changeGTKTheme/$wallpapperTheme"'"' $iThreeDir/config.d/main.conf
+      sed -i '/set $lockpaper/cset $lockpaper '"$themesDir/$changeGTKTheme/$wallpapperTheme"'' $iThreeDir/config.d/main.conf
+      feh --bg-scale "$themesDir/$changeGTKTheme/$wallpapperTheme"
+      echo "${GREEN}-->${RESTORE}${BOLD} wallpaper changed to '$wallpapperTheme' ${RESTORE}" | sed 's/^/   /'
+    else
+      echo "${YELLOW}-->${RESTORE}${BOLD} wallpaper '$wallpapperTheme' does not exist, ignoring... ${RESTORE}" | sed 's/^/   /'
+    fi
+  fi
+
+  echo "${GREEN}::${RESTORE}${BOLD} GTK theme '$changeGTKTheme' applied ${RESTORE}"
+  notify-send \
+    -c 'history-ignore' \
+    -h string:x-dunst-stack-tag:system \
+    -t 2000 \
+    ''$scriptName'' 'GTK theme '$changeGTKTheme' applied'""
+fi
+
+# change i3 theme
+if [ "$changeIThreeF" ]; then
+  echo "${GREEN}::${RESTORE}${BOLD} Changing i3 theme to '$changeIThree' ${RESTORE}"
+
+  # i3 theme
+  # getting JSON file contents to var
+  themeJSON=$(cat $themesDir/$changeIThree/theme.config)
+  iThreeTheme=$( echo $themeJSON | jq -r '.i3["i3-theme"]' )
+  if [[ "$iThreeTheme" ]]; then
+    if [[ -e "$themesDir/$changeIThree/$iThreeTheme" ]]; then
+      # copying i3status theme
+      cp -f "$themesDir/$changeIThree/$iThreeTheme" $iThreeDir/config.d/theme.conf
+      echo "${GREEN}-->${RESTORE}${BOLD} Copying '$changeIThree' i3 theme to $iThreeDir/config.d/theme.conf  ${RESTORE}" | sed 's/^/   /'
+      # remaking i3status config
+      bash $iThreeRemakeScript
+      echo "${GREEN}-->${RESTORE}${BOLD} Remaking i3 config  ${RESTORE}" | sed 's/^/   /'
+    else
+      echo "${YELLOW}-->${RESTORE}${BOLD} i3 theme '$iThreeTheme' not found, ignoring...  ${RESTORE}" | sed 's/^/   /'
+    fi
+  else
+    echo "${YELLOW}-->${RESTORE}${BOLD} i3 theme setting is empty, ignoring...  ${RESTORE}" | sed 's/^/   /'
+  fi
+
+  # i3status theme
+  # getting JSON file contents to var
+  iThreeTheme=$( echo $themeJSON | jq -r '.i3status["i3status-theme"]' )
+  if [[ "$iThreeTheme" ]]; then
+    if [[ -e "$themesDir/$changeIThree/$iThreeTheme" ]]; then
+      # copying i3status theme
+      cp -f "$themesDir/$changeIThree/$iThreeTheme" $iThreeStatusDir/config.d/theme.conf
+      echo "${GREEN}-->${RESTORE}${BOLD} Copying '$changeIThree' i3status theme to $iThreeStatusDir/config.d/theme.conf  ${RESTORE}" | sed 's/^/   /'
+      # remaking i3status config
+      bash $iThreeStatusRemakeScript
+      echo "${GREEN}-->${RESTORE}${BOLD} Remaking i3status config  ${RESTORE}" | sed 's/^/   /'
+    else
+      echo "${YELLOW}-->${RESTORE}${BOLD} i3status theme '$iThreeTheme' not found, ignoring...  ${RESTORE}" | sed 's/^/   /'
+    fi
+  else
+    echo "${YELLOW}-->${RESTORE}${BOLD} i3status theme setting is empty, ignoring...  ${RESTORE}" | sed 's/^/   /'
+  fi
+
+  # restarting i3
+  i3-msg restart 1>/dev/null
+  echo "${GREEN}-->${RESTORE}${BOLD} Reloading i3 and i3status config  ${RESTORE}" | sed 's/^/   /'
+  echo "${GREEN}::${RESTORE}${BOLD} i3 theme '$changeIThree' applied ${RESTORE}"
+
+  notify-send \
+    -c 'history-ignore' \
+    -h string:x-dunst-stack-tag:system \
+    -t 2000 \
+    ''$scriptName'' 'i3 theme '$changeIThree' applied'""
+
+  #TODO
+  # move xresources and dunst to separated flags
+  # xresources loading
+  xresourcesTheme=$( echo $themeJSON | jq -r '.["xresources"]' )
+  echo "${GREEN}::${RESTORE}${BOLD} Changing Xresources theme to '$xresourcesTheme' ${RESTORE}"
+  if [[ "$xresourcesTheme" ]]; then
+    if [[ -e "$themesDir/$changeIThree/$xresourcesTheme" ]]; then
+      echo "${GREEN}-->${RESTORE}${BOLD} Copying '$xresourcesTheme' Xresources theme to ~/.Xresources.d/theme.Xresources  ${RESTORE}" | sed 's/^/   /'
+      cp -f "$themesDir/$changeIThree/$xresourcesTheme" ~/.Xresources.d/theme.Xresources
+      echo "${GREEN}-->${RESTORE}${BOLD} Reloading Xresources with xrdb ${RESTORE}" | sed 's/^/   /'
+      xrdb ~/.Xresources
+      echo "${GREEN}::${RESTORE}${BOLD} Xresources theme '$xresourcesTheme' applied ${RESTORE}"
+    else
+      echo "${YELLOW}-->${RESTORE}${BOLD} Xresources theme '$xresourcesTheme' not found, ignoring...  ${RESTORE}" | sed 's/^/   /'
+    fi
+  else
+    echo "${YELLOW}-->${RESTORE}${BOLD} Xresources theme setting is empty, ignoring...  ${RESTORE}" | sed 's/^/   /'
+  fi
+
+  # dunst loading
+  dunstTheme=$( echo $themeJSON | jq -r '.dunst["dunst-theme"]' )
+  echo "${GREEN}::${RESTORE}${BOLD} Changing dunst theme to '$dunstTheme' ${RESTORE}"
+
+  if [[ "$dunstTheme" ]]; then
+    if [[ "$dunstTheme" == "auto" ]]; then
+      killall dunst
+      echo "${GREEN}-->${RESTORE}${BOLD} Getting colors from Xresources ${RESTORE}" | sed 's/^/   /'
+      bash $scriptDir/i3dunst -g
+      (dunst 2>/dev/null &)
+      echo "${GREEN}::${RESTORE}${BOLD} Dunst theme applied ${RESTORE}"
+    elif [[ -e "$themesDir/$changeIThree/$dunstTheme" ]]; then
+      echo
+    else
+      echo "${YELLOW}-->${RESTORE}${BOLD} Xresources theme '$xresourcesTheme' not found, ignoring...  ${RESTORE}" | sed 's/^/   /'
+    fi
+  else
+    echo "${YELLOW}-->${RESTORE}${BOLD} Xresources theme setting is empty, ignoring...  ${RESTORE}" | sed 's/^/   /'
+  fi
+
+  # kitty reload
+  #killall -SIGUSR1 kitty
+fi
+exit 0

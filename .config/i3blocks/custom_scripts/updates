@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-#
-# super simple i3blocks blocklet script to monitor arch updates
-
-ARCHUPDATE_CMD=$(pacman -Qqu | wc -l)
-
-if [[ $ARCHUPDATE_CMD -gt 0 ]]; then
-    echo updates available
-fi

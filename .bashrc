@@ -49,28 +49,34 @@ alias pls-edit-env='sudo nano /etc/environment'
 
 # i3
 # edit config file
-alias i3-edit-config='nano ~/.config/i3/config.d/config-main'
-alias i3-edit-config-gui='xdg-open ~/.config/i3/config.d/config-main & disown'
+alias i3-edit-config='nano ~/.config/i3/config.d/main.conf'
+alias i3-edit-config-gui='xdg-open ~/.config/i3/config.d/main.conf & disown'
 # remake config and reload
 alias i3-remake-config='bash ~/.config/i3/makeconfig; i3-msg restart'
 # reload wallpaper
-alias i3-wallpaper-default='feh --bg-scale ~/.config/i3/config.d/wallpapers/breezeblack.png'
+#alias i3-wallpaper-default='feh --bg-scale ~/.config/i3/config.d/wallpapers/breezeblack.png'
 # set wallpaper
 alias i3-wallpaper-set='feh --bg-scale'
 
 # i3status
 # edit config file
-alias i3status-edit-config='nano ~/.config/i3status/config.d/config-main'
-alias i3status-edit-config-gui='xdg-open ~/.config/i3status/config.d/config-main & disown'
+alias i3status-edit-config='nano ~/.config/i3status/config.d/main.conf'
+alias i3status-edit-config-gui='xdg-open ~/.config/i3status/config.d/main.conf & disown'
 # remake config and reload
 alias i3status-remake-config='bash ~/.config/i3status/makeconfig; i3-msg restart'
+
+#i3 theme changer
+alias i3theme='bash ~/.config/i3/config.d/scripts/i3theme/i3theme'
 
 # simple script with helpful pacman commands
 alias help-pacman='bash ~/.config/i3/config.d/scripts/help-pacman'
 
 
 # simple aur helper
-alias packy='bash .config/i3/config.d/scripts/packy'
+alias packy='bash ~/Coding/packy/packy'
 
 # check news from arch
-alias archnews='bash ~/.config/i3/config.d/scripts/archnews'
+alias archnews='bash ~/Coding/archnews/archnews'
+
+# download playlist to mp3 from youtube
+alias youtube-dl-playlist="youtube-dl -i --extract-audio --audio-format mp3 -o '%(title)s.%(ext)s'"

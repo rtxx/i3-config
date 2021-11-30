@@ -2,6 +2,10 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 # Based on Manjaro i3 config file
 
+### Includes ###
+# theme
+#include ~/.config/i3/config.d/theme.conf
+
 #### General Settings ####
 # default file manager
 set $file_manager thunar
@@ -13,10 +17,10 @@ set $browser google-chrome-stable
 set $i3bar py3status
 
 # wallpaper path
-set $wallpaper ~/.config/i3/config.d/wallpapers/breezeblack.png
+set $wallpaper "/home/ruitx/.config/i3/config.d/scripts/i3theme/themes/breeze/breeze-ice.png"
 
 # lock wallpaper path
-set $lockpaper ~/.config/i3/config.d/wallpapers/breezeblack.png
+set $lockpaper /home/ruitx/.config/i3/config.d/scripts/i3theme/themes/breeze/breeze-ice.png
 
 # Scripts
 # i3exit is a script from i3 manjaro, adds shutdown menu : https://github.com/Airblader/dotfiles-manjaro/blob/master/.i3/i3exit
@@ -230,6 +234,18 @@ bindsym Ctrl+period exec --no-startup-id dunstctl history-pop
 # Context menu.
 bindsym Ctrl+Shift+period exec --no-startup-id dunstctl context
 
+# Reload dunst
+bindsym $mod+Shift+n exec --no-startup-id \
+          "notify-send \
+            -c 'history-ignore' \
+            -u 'critical' \
+            -t 2000 \
+            'Notification Manager' 'Reloading dunst'; \
+          killall dunst ; sleep 2 ; dunst ; notify-send \
+            -c 'history-ignore' \
+            -t 2000 \
+            'Notification Manager' 'Reloading dunst complete.' & $i3sounds complete"
+
 #### Applications Section ####
 # Start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
@@ -275,14 +291,17 @@ bindsym $mod+Shift+w exec --no-startup-id i3-sensible-terminal -name termfloat -
 
 # Autostart applications
 exec --no-startup-id xrdb ~/.Xresources
+exec --no-startup-id xsettingsd
 exec --no-startup-id $i3sounds power-plug
 #exec --no-startup-id "$check-updates && $i3sounds complete || $i3sounds default"
-exec --no-startup-id $i3sounds power-plug
+#exec --no-startup-id $i3sounds power-plug
 exec --no-startup-id volumeicon
 exec --no-startup-id feh --bg-scale $wallpaper
-exec --no-startup-id dunst \
-                      -lf "$base03" -nf "$base05" -cf "$base05" \
-                      -lb "$base00" -nb "$base00" -cb "$base08"
+#exec --no-startup-id dunst \
+#                      -lf "$base03" -nf "$base05" -cf "$base05" \
+#                      -lb "$base00" -nb "$base00" -cb "$base08"
+#exec --no-startup-id killall dunst; sh -c "~/Coding/gendunst/gendunst -g"; sleep 5; dunst
+exec --no-startup-id dunst
 exec --no-startup-id picom -b
 exec --no-startup-id gpaste-client daemon
 exec --no-startup-id udiskie --no-automount --tray
