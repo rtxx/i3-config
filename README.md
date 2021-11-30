@@ -11,7 +11,7 @@
 
 Base packages
 ```
-pacman -S i3-gaps i3status py3status i3lock python-i3ipc dmenu clipmenu gpaste noto-fonts noto-fonts-emoji ttf-fantasque-sans-mono terminus-font xterm htop nethogs arandr volumeicon dunst feh picom udiskie unclutter xorg-xinput xfce4-power-manager tlp cpupower polkit polkit-gnome polkit-qt5 networkmanager nm-connection-editor network-manager-applet breeze breeze-gtk xsettingsd qt5ct lxappearance capitaine-cursors arc-icon-theme archlinux-wallpaper thunar tumbler ffmpegthumbnailer thunar-archive-plugin thunar-media-tags-plugin mousepad firefox neofetch scrot xdg-user-dirs lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings git gvfs gvfs-smb gvfs-mtp powertop pulseaudio pulseaudio-alsa alsa-utils pavucontrol ufw gufw gnome-keyring seahorse nano-syntax-highlighting xarchiver unrar xsettingsd
+pacman -S i3-gaps i3status py3status i3lock python-i3ipc dmenu clipmenu gpaste noto-fonts noto-fonts-emoji ttf-fantasque-sans-mono terminus-font xterm htop nethogs arandr volumeicon dunst feh picom udiskie unclutter xorg-xinput xfce4-power-manager tlp cpupower polkit polkit-gnome polkit-qt5 networkmanager nm-connection-editor network-manager-applet breeze breeze-gtk xsettingsd qt5ct lxappearance capitaine-cursors arc-icon-theme papirus-icon-theme archlinux-wallpaper thunar tumbler ffmpegthumbnailer thunar-archive-plugin thunar-media-tags-plugin mousepad firefox neofetch scrot xdg-user-dirs lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings git gvfs gvfs-smb gvfs-mtp powertop pulseaudio pulseaudio-alsa alsa-utils pavucontrol ufw gufw gnome-keyring seahorse nano-syntax-highlighting xarchiver unrar
 ```
 Install ```yay```
 ```
