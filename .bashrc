@@ -73,7 +73,7 @@ alias help-pacman='bash ~/.config/i3/config.d/scripts/help-pacman'
 
 
 # simple aur helper
-alias packy='bash ~/Coding/packy/packy'
+alias packy='bash ~/.config/i3/config.d/scripts/packy'
 
 # check news from arch
 alias archnews='bash ~/Coding/archnews/archnews'

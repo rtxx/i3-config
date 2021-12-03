@@ -17,10 +17,10 @@ set $browser google-chrome-stable
 set $i3bar py3status
 
 # wallpaper path
-set $wallpaper "/home/ruitx/.config/i3/config.d/scripts/i3theme/themes/breeze/breeze-ice.png"
+set $wallpaper "~/.config/i3/config.d/scripts/i3theme/themes/breeze/breeze-ice.png"
 
 # lock wallpaper path
-set $lockpaper /home/ruitx/.config/i3/config.d/scripts/i3theme/themes/breeze/breeze-ice.png
+set $lockpaper ~/.config/i3/config.d/scripts/i3theme/themes/breeze/breeze-ice.png
 
 # Scripts
 # i3exit is a script from i3 manjaro, adds shutdown menu : https://github.com/Airblader/dotfiles-manjaro/blob/master/.i3/i3exit

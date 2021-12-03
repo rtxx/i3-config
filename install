@@ -47,6 +47,7 @@ cp -rp $userHomeFolder/.Xresources.d $userHomeFolder/.config/$backupFolder
 cp -p $userHomeFolder/.xinitrc $userHomeFolder/.config/$backupFolder
 cp -p $userHomeFolder/.gtkrc-2.0 $userHomeFolder/.config/$backupFolder
 cp -p $userHomeFolder/.bashrc $userHomeFolder/.config/$backupFolder
+cp -p $userHomeFolder/.xsettingsd $userHomeFolder/.config/$backupFolder
 cp -p /etc/nanorc $userHomeFolder/.config/$backupFolder
 cp -p /etc/lightdm/lightdm-gtk-greeter.conf $userHomeFolder/.config/$backupFolder
 echo
@@ -59,6 +60,7 @@ cp -p $tempFolder/.Xresources $userHomeFolder/
 cp -p $tempFolder/.xinitrc $userHomeFolder/
 cp -p $tempFolder/.gtkrc-2.0 $userHomeFolder/
 cp -p $tempFolder/.bashrc $userHomeFolder/
+cp -p $tempFolder/.xsettingsd $userHomeFolder/
 cp -p $tempFolder/nanorc /etc
 cp -p $tempFolder/lightdm-gtk-greeter.conf /etc/lightdm
 echo
@@ -68,12 +70,12 @@ echo "Updating i3, i3status config files"
 if [[ -f "$userHomeFolder/.config/i3/config" ]]; then
   rm $userHomeFolder/.config/i3/config
 fi
-cat $userHomeFolder/.config/i3/config.d/config-main $userHomeFolder/.config/i3/config.d/config-theme > $userHomeFolder/.config/i3/config
+cat $userHomeFolder/.config/i3/config.d/main.conf $userHomeFolder/.config/i3/config.d/theme.conf > $userHomeFolder/.config/i3/config
 
 if [[ -f "$userHomeFolder/.config/i3status/config" ]]; then
   rm $userHomeFolder/.config/i3status/config
 fi
-cat $userHomeFolder/.config/i3status/config.d/config-theme $userHomeFolder/.config/i3status/config.d/config-main > $userHomeFolder/.config/i3status/config
+cat $userHomeFolder/.config/i3status/config.d/theme.conf $userHomeFolder/.config/i3status/config.d/main.conf > $userHomeFolder/.config/i3status/config
 echo
 
 #echo "Running xdg-user-dirs-update"
