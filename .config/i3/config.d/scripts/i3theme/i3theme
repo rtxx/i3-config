@@ -127,6 +127,15 @@ function verifyJSON() {
   fi
 }
 
+# check if theme is present on /usr/share/theme
+function themeExists() {
+  if [[ -e "/usr/share/themes/$1" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 # list all the themes avaiable
 if [ "$listThemesF" ]; then
   echo "${GREEN}::${RESTORE}${BOLD} Themes avaiable: ${RESTORE}"
@@ -167,11 +176,17 @@ if [ "$changeGTKThemeF" ]; then
   # check if dependencies are met
   themeDependencies=$( echo $themeJSON | jq -r '.["dependencies"][]' )
   for pkg in ${themeDependencies[@]}; do
-    checkDependency=$(pacman -Q $pkg)
+    checkDependency=$(pacman -Q $pkg )
     exitStatus=$?
     if [ "$exitStatus" -eq 1 ]; then
-      echo ${RED}::${RESTORE}${BOLD} Missing dependencies: Please install $pkg ${RESTORE}
-      exit 2
+      # check if theme is installed, but its not a package
+      echo "${YELLOW}::${RESTORE}${BOLD} Package '$pkg' not found, maybe its a theme name? Checking... ${RESTORE}"
+      if themeExists "$pkg"; then
+        echo "${GREEN}::${RESTORE}${BOLD} Theme found, continuing... ${RESTORE}"
+      else
+        echo "${RED}::${RESTORE}${BOLD} Error: Please install '$pkg' or if it's a GTK theme, copy it to /usr/share/themes ${RESTORE}"
+        exit 2
+      fi
     fi
   done
 

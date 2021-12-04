@@ -431,18 +431,24 @@ if [ "$downloadPkg" ]; then
         # need some work here, to get the makepkg error but still output its progress
         # makepkg with -s (build package) and -c (clean after sucessful build)
         makepkg -sc
-        #makePkg=$(makepkg -s)
-        #makePkgExitStatus=$?
-        #if [ "$curlURLExitStatus" -eq 0 ]; then
+        makePkgExitStatus=$?
+        # check if package is already built
+        if [ "$makePkgExitStatus" -eq 13 ]; then
+          whileString="${YELLOW}::${RESTORE} ${BOLD} Package '$pkgString' is already built. Continue? [yes] [no] : ${RESTORE}"
+          printf "$whileString"
+          while read key; do
+            case "$key" in
+              # if yes then continues the installation
+              y|yes) continueInstall=1; break ;;
+              n|no) echo "${BOLD}:: Exiting... ${RESTORE}" ; exit 2 ;;
+              *) printf "${RED}::${RESTORE} Error: Unknown option '$key'.${RESTORE}\n" ; printf "$whileString" ;;
+            esac
+          done
+        fi
+        # check is makepkg compile sucessfully
+        if [[ "$makePkgExitStatus" -eq 0 || "$continueInstall" ]]; then
           compilePkg=$(ls $pkgLocation/*.pkg.tar.zst)
-          echo
           echo ::${BOLD} makepkg complete.${RESTORE}
-          echo ${GREEN}::${RESTORE}${BOLD} If successful, use [ pacman -U $compilePkg ] to install $pkgString${RESTORE}
-          echo ${RED}::${RESTORE}${BOLD} If not, check for errors above ${RESTORE}
-          #exit 0
-        #else
-          #echo ${BOLD}:: makepkg complete but with errors! ${RESTORE}
-          #echo ${BOLD}:: Check for errors above ${RESTORE}
           if [[ -e "$compilePkg" ]]; then
             whileString="${BOLD}:: Install $pkgString? [yes] [no] : ${RESTORE}"
             printf "$whileString"
@@ -455,7 +461,12 @@ if [ "$downloadPkg" ]; then
             done
           fi
           exit 0
-        #fi
+        else
+          echo
+          echo ${RED}::${RESTORE}${BOLD} makepkg complete but with errors! ${RESTORE}
+          echo ${RED}::${RESTORE}${BOLD} Check for makepkg errors above ${RESTORE}
+          exit 2
+        fi
       fi
       exit 0
     else
