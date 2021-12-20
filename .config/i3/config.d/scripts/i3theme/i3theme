@@ -27,6 +27,8 @@ themesDir=$scriptDir/themes
 xsettingsdConfigFile=~/.xsettingsd
 gtk3ConfigFile=~/.config/gtk-3.0/settings.ini
 gtk2ConfigFile=~/.gtkrc-2.0
+qtConfigFile=~/.config/qt5ct/qt5ct.conf
+
 # i3 dirs
 iThreeDir=~/.config/i3
 iThreeRemakeScript=~/.config/i3/makeconfig
@@ -97,6 +99,7 @@ while [[ $# -gt 0 ]]; do
     -t|--theme) shift; applyTheme="$1" ; applyThemeF=1 ;;
     -g|--gtk) shift; changeGTKTheme="$1" ; changeGTKThemeF=1 ;;
     -i|--i3) shift; changeIThree="$1" ; changeIThreeF=1 ;;
+    -v|--verbose) verboseF=1 ;;
 
     *) echo "${RED}::${RESTORE}${BOLD} Unknown option: '$key' (use -h for help)${RESTORE}" ; exit 2 ;;
   esac
@@ -114,8 +117,6 @@ if [ "$applyThemeF" ]; then
   changeGTKTheme="$applyTheme" ; changeGTKThemeF=1
   changeIThree="$applyTheme" ; changeIThreeF=1
 fi
-
-
 
 # checks if JSON files is valid
 # empty files will NOT error out
@@ -198,6 +199,10 @@ if [ "$changeGTKThemeF" ]; then
   gtkCursorSize=$( echo $themeJSON | jq -r '.gtk["gtk-cursor-theme-size"]' )
   wallpapperTheme=$( echo $themeJSON | jq -r '.["wallpaper"]' )
 
+  # QT values from JSON
+  qtThemeName=$( echo $themeJSON | jq -r '.qt["style"]' )
+  qtColorSchemeName=$( echo $themeJSON | jq -r '.qt["color_scheme_path"]' )
+
   # if GTK theme exists
   if [[ -d "/usr/share/themes/$gtkThemeName" ]]; then
 
@@ -208,7 +213,9 @@ if [ "$changeGTKThemeF" ]; then
     sed -i '/Net\/ThemeName/cNet\/ThemeName '$gtkThemeNameQ'' $xsettingsdConfigFile
     sed -i '/Net\/IconThemeName/cNet\/IconThemeName '$gtkIconNameQ'' $xsettingsdConfigFile
     sed -i '/Gtk\/CursorThemeName/cGtk\/CursorThemeName '$gtkCursorNameQ'' $xsettingsdConfigFile
-    echo "${GREEN}-->${RESTORE}${BOLD} $xsettingsdConfigFile changed ${RESTORE}" | sed 's/^/   /'
+    if [ "$verboseF" ]; then
+      echo "${GREEN}-->${RESTORE}${BOLD} $xsettingsdConfigFile changed ${RESTORE}" | sed 's/^/   /'
+    fi
 
     # gtk 2.0 section
     sed -i '/gtk-theme-name/cgtk-theme-name='"$gtkThemeName"'' $gtk2ConfigFile
@@ -216,7 +223,9 @@ if [ "$changeGTKThemeF" ]; then
     sed -i '/gtk-font-name/cgtk-font-name='"$gtkFontName"'' $gtk2ConfigFile
     sed -i '/gtk-cursor-theme-name/cgtk-cursor-theme-name='"$gtkCursorName"'' $gtk2ConfigFile
     sed -i '/gtk-cursor-theme-size/cgtk-cursor-theme-size='"$gtkCursorSize"'' $gtk2ConfigFile
-    echo "${GREEN}-->${RESTORE}${BOLD} $gtk2ConfigFile changed ${RESTORE}" | sed 's/^/   /'
+    if [ "$verboseF" ]; then
+      echo "${GREEN}-->${RESTORE}${BOLD} $gtk2ConfigFile changed ${RESTORE}" | sed 's/^/   /'
+    fi
 
     # gtk 3.0 section
     sed -i '/gtk-theme-name/cgtk-theme-name='"$gtkThemeName"'' $gtk3ConfigFile
@@ -224,11 +233,26 @@ if [ "$changeGTKThemeF" ]; then
     sed -i '/gtk-font-name/cgtk-font-name='"$gtkFontName"'' $gtk3ConfigFile
     sed -i '/gtk-cursor-theme-name/cgtk-cursor-theme-name='"$gtkCursorName"'' $gtk3ConfigFile
     sed -i '/gtk-cursor-theme-size/cgtk-cursor-theme-size='"$gtkCursorSize"'' $gtk3ConfigFile
-    echo "${GREEN}-->${RESTORE}${BOLD} $gtk3ConfigFile changed ${RESTORE}" | sed 's/^/   /'
+    if [ "$verboseF" ]; then
+      echo "${GREEN}-->${RESTORE}${BOLD} $gtk3ConfigFile changed ${RESTORE}" | sed 's/^/   /'
+    fi
 
     # on the fly theme change for GTK apps, reloading xsettingsd
     killall -HUP xsettingsd
-    echo "${GREEN}-->${RESTORE}${BOLD} xsettingsd reloaded ${RESTORE}" | sed 's/^/   /'
+    if [ "$verboseF" ]; then
+      echo "${GREEN}-->${RESTORE}${BOLD} xsettingsd reloaded ${RESTORE}" | sed 's/^/   /'
+    fi
+
+    # qt section
+    # TODO: change this
+    if [ "$verboseF" ]; then
+      echo "${GREEN}::${RESTORE}${BOLD} Changing QT theme to '$changeGTKTheme' ${RESTORE}"
+    fi
+    sed -i '/style/cstyle='"$qtThemeName"'' $qtConfigFile
+    sed -i '/color_scheme_path/ccolor_scheme_path='"$qtColorSchemeName"'' $qtConfigFile
+    if [ "$verboseF" ]; then
+      echo "${GREEN}-->${RESTORE}${BOLD} $qtConfigFile changed ${RESTORE}" | sed 's/^/   /'
+    fi
 
   else
     echo "${RED}::${RESTORE}${BOLD} $gtkThemeName is missing from /usr/share/themes ${RESTORE}"
@@ -239,9 +263,11 @@ if [ "$changeGTKThemeF" ]; then
     if [[ -e "$themesDir/$changeGTKTheme/$wallpapperTheme" ]]; then
       # change i3 main.conf so next login the wallpaper and lockscreen are correct
       sed -i '/set $wallpaper/cset $wallpaper "'"$themesDir/$changeGTKTheme/$wallpapperTheme"'"' $iThreeDir/config.d/main.conf
-      sed -i '/set $lockpaper/cset $lockpaper '"$themesDir/$changeGTKTheme/$wallpapperTheme"'' $iThreeDir/config.d/main.conf
+      #sed -i '/set $lockpaper/cset $lockpaper '"$themesDir/$changeGTKTheme/$wallpapperTheme"'' $iThreeDir/config.d/main.conf
       feh --bg-scale "$themesDir/$changeGTKTheme/$wallpapperTheme"
-      echo "${GREEN}-->${RESTORE}${BOLD} wallpaper changed to '$wallpapperTheme' ${RESTORE}" | sed 's/^/   /'
+      if [ "$verboseF" ]; then
+        echo "${GREEN}-->${RESTORE}${BOLD} wallpaper changed to '$wallpapperTheme' ${RESTORE}" | sed 's/^/   /'
+      fi
     else
       echo "${YELLOW}-->${RESTORE}${BOLD} wallpaper '$wallpapperTheme' does not exist, ignoring... ${RESTORE}" | sed 's/^/   /'
     fi
@@ -251,7 +277,7 @@ if [ "$changeGTKThemeF" ]; then
   notify-send \
     -c 'history-ignore' \
     -h string:x-dunst-stack-tag:system \
-    -t 2000 \
+    -t 5000 \
     ''$scriptName'' 'GTK theme '$changeGTKTheme' applied'""
 fi
 
@@ -267,10 +293,14 @@ if [ "$changeIThreeF" ]; then
     if [[ -e "$themesDir/$changeIThree/$iThreeTheme" ]]; then
       # copying i3status theme
       cp -f "$themesDir/$changeIThree/$iThreeTheme" $iThreeDir/config.d/theme.conf
-      echo "${GREEN}-->${RESTORE}${BOLD} Copying '$changeIThree' i3 theme to $iThreeDir/config.d/theme.conf  ${RESTORE}" | sed 's/^/   /'
+      if [ "$verboseF" ]; then
+        echo "${GREEN}-->${RESTORE}${BOLD} Copying '$changeIThree' i3 theme to $iThreeDir/config.d/theme.conf  ${RESTORE}" | sed 's/^/   /'
+      fi
       # remaking i3status config
       bash $iThreeRemakeScript
-      echo "${GREEN}-->${RESTORE}${BOLD} Remaking i3 config  ${RESTORE}" | sed 's/^/   /'
+      if [ "$verboseF" ]; then
+        echo "${GREEN}-->${RESTORE}${BOLD} Remaking i3 config  ${RESTORE}" | sed 's/^/   /'
+      fi
     else
       echo "${YELLOW}-->${RESTORE}${BOLD} i3 theme '$iThreeTheme' not found, ignoring...  ${RESTORE}" | sed 's/^/   /'
     fi
@@ -285,10 +315,14 @@ if [ "$changeIThreeF" ]; then
     if [[ -e "$themesDir/$changeIThree/$iThreeTheme" ]]; then
       # copying i3status theme
       cp -f "$themesDir/$changeIThree/$iThreeTheme" $iThreeStatusDir/config.d/theme.conf
-      echo "${GREEN}-->${RESTORE}${BOLD} Copying '$changeIThree' i3status theme to $iThreeStatusDir/config.d/theme.conf  ${RESTORE}" | sed 's/^/   /'
+      if [ "$verboseF" ]; then
+        echo "${GREEN}-->${RESTORE}${BOLD} Copying '$changeIThree' i3status theme to $iThreeStatusDir/config.d/theme.conf  ${RESTORE}" | sed 's/^/   /'
+      fi
       # remaking i3status config
       bash $iThreeStatusRemakeScript
-      echo "${GREEN}-->${RESTORE}${BOLD} Remaking i3status config  ${RESTORE}" | sed 's/^/   /'
+      if [ "$verboseF" ]; then
+        echo "${GREEN}-->${RESTORE}${BOLD} Remaking i3status config  ${RESTORE}" | sed 's/^/   /'
+      fi
     else
       echo "${YELLOW}-->${RESTORE}${BOLD} i3status theme '$iThreeTheme' not found, ignoring...  ${RESTORE}" | sed 's/^/   /'
     fi
@@ -298,13 +332,15 @@ if [ "$changeIThreeF" ]; then
 
   # restarting i3
   i3-msg restart 1>/dev/null
-  echo "${GREEN}-->${RESTORE}${BOLD} Reloading i3 and i3status config  ${RESTORE}" | sed 's/^/   /'
-  echo "${GREEN}::${RESTORE}${BOLD} i3 theme '$changeIThree' applied ${RESTORE}"
+  if [ "$verboseF" ]; then
+    echo "${GREEN}-->${RESTORE}${BOLD} Reloading i3 and i3status config  ${RESTORE}" | sed 's/^/   /'
+    echo "${GREEN}::${RESTORE}${BOLD} i3 theme '$changeIThree' applied ${RESTORE}"
+  fi
 
   notify-send \
     -c 'history-ignore' \
     -h string:x-dunst-stack-tag:system \
-    -t 2000 \
+    -t 5000 \
     ''$scriptName'' 'i3 theme '$changeIThree' applied'""
 
   #TODO
@@ -314,11 +350,17 @@ if [ "$changeIThreeF" ]; then
   echo "${GREEN}::${RESTORE}${BOLD} Changing Xresources theme to '$xresourcesTheme' ${RESTORE}"
   if [[ "$xresourcesTheme" ]]; then
     if [[ -e "$themesDir/$changeIThree/$xresourcesTheme" ]]; then
-      echo "${GREEN}-->${RESTORE}${BOLD} Copying '$xresourcesTheme' Xresources theme to ~/.Xresources.d/theme.Xresources  ${RESTORE}" | sed 's/^/   /'
+      if [ "$verboseF" ]; then
+        echo "${GREEN}-->${RESTORE}${BOLD} Copying '$xresourcesTheme' Xresources theme to ~/.Xresources.d/theme.Xresources  ${RESTORE}" | sed 's/^/   /'
+      fi
       cp -f "$themesDir/$changeIThree/$xresourcesTheme" ~/.Xresources.d/theme.Xresources
-      echo "${GREEN}-->${RESTORE}${BOLD} Reloading Xresources with xrdb ${RESTORE}" | sed 's/^/   /'
+      if [ "$verboseF" ]; then
+        echo "${GREEN}-->${RESTORE}${BOLD} Reloading Xresources with xrdb ${RESTORE}" | sed 's/^/   /'
+      fi
       xrdb ~/.Xresources
-      echo "${GREEN}::${RESTORE}${BOLD} Xresources theme '$xresourcesTheme' applied ${RESTORE}"
+      if [ "$verboseF" ]; then
+        echo "${GREEN}::${RESTORE}${BOLD} Xresources theme '$xresourcesTheme' applied ${RESTORE}"
+      fi
     else
       echo "${YELLOW}-->${RESTORE}${BOLD} Xresources theme '$xresourcesTheme' not found, ignoring...  ${RESTORE}" | sed 's/^/   /'
     fi
@@ -333,12 +375,16 @@ if [ "$changeIThreeF" ]; then
   if [[ "$dunstTheme" ]]; then
     if [[ "$dunstTheme" == "auto" ]]; then
       killall dunst
-      echo "${GREEN}-->${RESTORE}${BOLD} Getting colors from Xresources ${RESTORE}" | sed 's/^/   /'
+      if [ "$verboseF" ]; then
+        echo "${GREEN}-->${RESTORE}${BOLD} Getting colors from Xresources ${RESTORE}" | sed 's/^/   /'
+      fi
       bash $scriptDir/i3dunst -g
       (dunst 2>/dev/null &)
-      echo "${GREEN}::${RESTORE}${BOLD} Dunst theme applied ${RESTORE}"
+      if [ "$verboseF" ]; then
+        echo "${GREEN}::${RESTORE}${BOLD} Dunst theme applied ${RESTORE}"
+      fi
     elif [[ -e "$themesDir/$changeIThree/$dunstTheme" ]]; then
-      echo
+      echo "${YELLOW}::${RESTORE}${BOLD} Not implemented yet, please use 'auto' on theme.config  ${RESTORE}"
     else
       echo "${YELLOW}-->${RESTORE}${BOLD} Xresources theme '$xresourcesTheme' not found, ignoring...  ${RESTORE}" | sed 's/^/   /'
     fi
@@ -347,6 +393,15 @@ if [ "$changeIThreeF" ]; then
   fi
 
   # kitty reload
-  #killall -SIGUSR1 kitty
+  # TODO: add kitty support
+  # killall -SIGUSR1 kitty # on the fly reload all kitty terminals
 fi
+
+echo "${GREEN}::${RESTORE}${BOLD} i3theme done. ${RESTORE}"
+notify-send \
+  -c 'history-ignore' \
+  -h string:x-dunst-stack-tag:system \
+  -t 5000 \
+  ''$scriptName'' 'i3theme "'$applyTheme'" applied'""
+
 exit 0
