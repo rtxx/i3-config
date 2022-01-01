@@ -11,16 +11,16 @@
 set $file_manager thunar
 
 # default web browser
-set $browser google-chrome-stable
+set $browser firefox
 
 #i3 bar
 set $i3bar py3status
 
 # wallpaper path
-set $wallpaper "/home/ruitx/.config/i3/config.d/scripts/i3theme/themes/breeze/breeze-ice.png"
+set $wallpaper "/home/ruitx/.config/i3/config.d/scripts/i3theme/themes/adapta-nokto/tealized.jpg"
 
 # lock wallpaper path
-set $lockpaper "~/.config/i3/config.d/wallpapers/lockscreen.png"
+set $lockpaper /home/$USER/.config/i3/config.d/wallpapers/lockscreen.png
 
 # Scripts
 # i3exit is a script from i3 manjaro, adds shutdown menu : https://github.com/Airblader/dotfiles-manjaro/blob/master/.i3/i3exit
@@ -31,13 +31,10 @@ set $i3cpu-governor ~/.config/i3/config.d/scripts/i3cpu-governor
 set $i3services ~/.config/i3/config.d/scripts/i3services
 # simpe notifications sounds script
 set $i3sounds ~/.config/i3/config.d/scripts/i3sounds
-# Scripts to open new windows in i3wm using alternating layouts (splith/splitv) for each new window. : https://github.com/olemartinorg/i3-alternating-layout
-set $i3-alt-layout ~/.config/i3/config.d/scripts/i3_alternating_layout.py
 # adds blur on wallpaper when a window is visible: https://github.com/rstacruz/feh-blur-wallpaper
 set $feh-blur ~/.config/i3/config.d/scripts/feh-blur
 # simple script to check for updates
 set $check-updates ~/.config/i3/config.d/scripts/check-updates
-
 
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod4
@@ -47,8 +44,8 @@ set $alt Mod1
 # workspace_layout tabbed <stacking|tabbed>
 
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
-default_border pixel 1
-default_floating_border normal
+default_border none #pixel 1
+default_floating_border none #normal
 
 # Hide borders
 #hide_edge_borders none
@@ -77,9 +74,6 @@ bindsym $mod+Shift+r restart
 
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-
-# test
-#bindsym $mod+Shift+a exec "kill $(pgrep -au $USER "bash" | grep "bash /usr/bin/clipmenud" | awk '{print$1}')"
 
 #### Sound Section ####
 # Opens alsamixer
@@ -124,7 +118,6 @@ bindsym XF86AudioMicMute exec --no-startup-id \
             -h string:x-dunst-stack-tag:audio \
             -t 750 \
             'Mic Toogle. Mute?' $(pactl get-source-mute 1 | cut -c 7- )"
-            # $(pactl get-source-mute 1)"
 
 # Change track with playerctl
 bindsym XF86AudioNext exec --no-startup-id \
@@ -202,8 +195,6 @@ bindsym XF86MonBrightnessDown exec --no-startup-id \
 
 # Lock screen and suspend system
 bindsym F12 exec --no-startup-id "$i3sounds power-unplug ;  $i3exit suspend"
-#bindsym F12 exec --no-startup-id "$i3sounds power-unplug & i3lock -f -i $lockpaper ; $i3exit suspend"
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork --color=aaaaaa
 
 # Monitor settings
 bindsym $mod+p exec --no-startup-id arandr
@@ -267,7 +258,6 @@ bindsym $mod+Ctrl+d exec --no-startup-id gmrun
 
 #jgmenu
 bindsym $mod+Shift+d exec --no-startup-id jgmenu_run
-#bindsym $mod+button2 --whole-window exec --no-startup-id jgmenu_run
 
 # Most used
 bindsym $mod+F1 exec $file_manager
@@ -277,12 +267,15 @@ bindsym $mod+F2 exec $browser
 bindsym $mod+Insert exec --no-startup-id i3-sensible-terminal -name termfloat -hold -e neofetch
 bindsym $mod+Delete exec i3-sensible-terminal -e htop
 bindsym $mod+F5 exec i3-sensible-terminal -e pkexec dmesg -wH
+
 # check for updates
 bindsym $mod+Shift+u exec --no-startup-id \
           "$check-updates \
           && $i3sounds complete || $i3sounds default"
+
 # emoji picker
 bindsym $mod+Ctrl+space exec --no-startup-id sh ~/.config/i3/config.d/scripts/emojipick
+
 # clipboard manager
 #bindsym $mod+c exec --no-startup-id "clipmenu -nf '$base05' -nb '$base00' -sb '$base05' -sf '$base00' -fn 'Fantasque Sans Mono-13' -p '>'"
 bindsym $mod+c exec --no-startup-id gpaste-client ui
@@ -295,14 +288,10 @@ bindsym $mod+Shift+w exec --no-startup-id i3-sensible-terminal -name termfloat -
 exec --no-startup-id xrdb ~/.Xresources
 exec --no-startup-id xsettingsd
 exec --no-startup-id $i3sounds power-plug
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork --color=$base00 --image=$lockpaper
 #exec --no-startup-id "$check-updates && $i3sounds complete || $i3sounds default"
-#exec --no-startup-id $i3sounds power-plug
 exec --no-startup-id volumeicon
 exec --no-startup-id feh --bg-scale $wallpaper
-#exec --no-startup-id dunst \
-#                      -lf "$base03" -nf "$base05" -cf "$base05" \
-#                      -lb "$base00" -nb "$base00" -cb "$base08"
-#exec --no-startup-id killall dunst; sh -c "~/Coding/gendunst/gendunst -g"; sleep 5; dunst
 exec --no-startup-id dunst
 exec --no-startup-id picom -b
 exec --no-startup-id gpaste-client daemon
@@ -315,8 +304,9 @@ exec --no-startup-id nm-applet
 # cute dog, dont kill it :(
 #exec --no-startup-id oneko -dog
 exec --no-startup-id jgmenu --at-pointer --hide-on-startup
-#exec --no-startup-id $i3-alt-layout
 #exec --no-startup-id $feh-blur --blur 4 --darken 0 -d
+exec --no-startup-id opensnitch-ui
+exec --no-startup-id python /home/ruitx/Coding/sunset/sunset.py
 
 # Open applications on specific workspaces
 assign [class="Skype"] $ws20
@@ -349,8 +339,9 @@ for_window [class="Nitrogen"] floating enable, sticky enable, border normal
 for_window [class="Oblogout"] fullscreen enable
 for_window [class="octopi"] floating enable
 for_window [class="Pavucontrol"] floating enable
-for_window [class="qt5ct"] floating enable, sticky enable, border normal
+for_window [class="qt5ct"] floating enable, sticky enable, border normal, resize set 800 600, move absolute position center
 for_window [class="Qtconfig-qt4"] floating enable, sticky enable, border normal
+for_window [title="Customize Look and Feel"] floating enable, sticky enable, border normal, resize set 800 600, move absolute position center
 for_window [class="Steam"] floating enable, sticky enable, border none
 #pip for firefox, 1920-320+8 1080-240+8 x-windowx+gap y-windowy+gap
 for_window [title="Picture-in-Picture"] floating enable, sticky enable, border none, resize set 320 240, move absolute position 1592 832
@@ -431,13 +422,13 @@ mode "$mode_services" {
 }
 
 #### i3 Windows Rules ####
-# focus_follows_mouse no
+focus_follows_mouse yes
 
 # change focus
 bindsym $mod+j focus left
 bindsym $mod+k focus down
 bindsym $mod+l focus up
-bindsym $mod+semicolon focus right
+bindsym $mod+ç focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
@@ -449,7 +440,7 @@ bindsym $mod+Right focus right
 bindsym $mod+Shift+j move left
 bindsym $mod+Shift+k move down
 bindsym $mod+Shift+l move up
-bindsym $mod+Shift+semicolon move right
+bindsym $mod+Shift+ç move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -582,9 +573,7 @@ bindsym $mod+Shift+8 move container to workspace $ws8; workspace $ws8
 bindsym $mod+Shift+9 move container to workspace $ws9; workspace $ws9
 
 # switch to workspace with urgent window
-#for_window [urgent=latest] focus # automatically
 bindsym $mod+Shift+Tab [urgent=latest] focus
-
 
 # Resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
@@ -609,7 +598,6 @@ mode "resize" {
   bindsym Return mode "default"
   bindsym Escape mode "default"
 }
-
 
 #############################
 ### settings for i3-gaps: ###
@@ -702,24 +690,24 @@ bar {
     }
 }
 
-## Base16ish Breeze dark
-# Author: rtxx
+## Base16 Ashes
+# Author: Jannik Siebert (https://github.com/janniks)
 #
 # You can use these variables anywhere in the i3 configuration file.
 
-set $base00 #31363b
-set $base01 #4d4d4d
-set $base02 #3daee9
-set $base03 #7f8c8d
-set $base04 #eff0f1
-set $base05 #fcfcfc
-set $base06 #fcfcfc
-set $base07 #fcfcfc
-set $base08 #da4453
-set $base09 #3daee9
-set $base0A #fdbc4b
-set $base0B #27ae60
-set $base0C #3daee9
-set $base0D #3daee9
-set $base0E #f47750
-set $base0F #3daee9
+set $base00 #1C2023
+set $base01 #393F45
+set $base02 #565E65
+set $base03 #747C84
+set $base04 #ADB3BA
+set $base05 #C7CCD1
+set $base06 #DFE2E5
+set $base07 #F3F4F5
+set $base08 #C7AE95
+set $base09 #C7C795
+set $base0A #AEC795
+set $base0B #95C7AE
+set $base0C #95AEC7
+set $base0D #AE95C7
+set $base0E #C795AE
+set $base0F #C79595

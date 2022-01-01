@@ -10,9 +10,9 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <h3 align="center">i3theme</h3>
+  <h3 align="center">Packy</h3>
   <p align="center">
-    Simple i3 theme changer
+    Simple AUR helper
     <br />
   </p>
 </div>
@@ -22,15 +22,16 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![](screenshot1.png)
-
-<!--
 ![](screenshot2)
+![](screenshot1)
 ![](screenshot3)
 ![](screenshot4)
--->
 
-i3theme is a simple script that changes i3 theme from a list of avaiable themes. It changes automatically i3 and i3status configs, Xresources, dunst, GTK and QT (not working atm).
+Packy is a simple AUR helper made with Bash. I made it to get more used to it. It has alot of _badness_ but it works for me, and now I know a bit more because of it.
+
+Packy can search, download and check for updates for AUR packages. It's still a bit of work to install the package, but it's in line with what the [Arch Wiki](https://wiki.archlinux.org/title/System_maintenance#Be_careful_with_unofficial_packages) recommends.
+
+Packy can check for updates for all installed AUR packages, but ***cannot*** update them automatically. Maybe in the future, but to me, it's not a priority, as I limit the use of AUR to a minimum.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -39,57 +40,48 @@ i3theme is a simple script that changes i3 theme from a list of avaiable themes.
 
 ### Prerequisites
 
-i3themes needs ```xsettingsd jq feh```
-jq to parse the JSON theme file, xsettingsd for GTK themes and feh for the wallpaper
+Packy only needs ```jq```, to parse JSON from the AUR API.
 * jq
   ```sh
-  pacman -Syu jq xsettingsd feh
+  pacman -Syu jq
   ```
 
 ### Installation
 
-1. Download it [here](https://github.com/rtxx/scripts/tree/main/i3theme)
+_Installing Packy is super simple. Because its only a script, you can run it anywhere._
+
+1. Download it [here](https://github.com/rtxx/scripts/blob/main/packy/packy)
 2. Run it
    ```sh
-   bash i3theme -h
+   bash packy
    ```
-Make sure its inside a folder with the directory 'themes', or else it wont work.
+Make sure its inside a folder, so it's easier to manage the downloaded packages..
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-i3theme can be used to 
+Packy can be used to 
 
-* Change the theme
+* Search
   ```sh
-  bash i3theme -t nord
+  bash packy -S gwe
   ```
-* List avaiable themes
+* Download
   ```sh
-  bash i3theme -l
-     ```
+  bash packy -Dx gwe
+  ```
+* and check for updates
+  ```sh
+  bash packy -U
+  ```
 * For more uses do
   ```sh
-  bash i3theme -h
+  bash packy -h
      ```
-### Notes
-* Please backup all the configs files before running. Please inspect the script before running because it **will** change several files and overwrite your configuration.
-* For the script to work, i3 and i3status must have the following folder structure:
-```
-i3
-  | config.d
-    | theme.conf
-    | main.conf
-  | config
-  | makeconfig
-```
-``` makeconfig ``` _glues_ the ```main.conf``` and ```theme.conf``` and replaces ```config```. Same for i3status.
-Check my i3 personal repo for more information.
-* I personally use base16 based themes for i3 and i3status, so it needs more testing for other types of themes (I think is fine but YMMV).
-* rxvt wont update on the fly its colors, please use ```kitty``` or other terminal that supports it. Thereś also [urxvt-config-reload](https://github.com/regnarg/urxvt-config-reload) if you need it.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
